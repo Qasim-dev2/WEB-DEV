@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM & Event Handling Examples</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>DOM & Event Handling Examples</h1>
+
+    <!-- Example 1: DOM Selection & Manipulation -->
+    <div class="section">
+        <h2>1. DOM Selection & Manipulation</h2>
+        <p id="demo-text">Original Text</p>
+        <button onclick="changeText()">Change Text</button>
+        <button onclick="changeStyle()">Change Style</button>
+        <button onclick="resetText()">Reset</button>
+    </div>
+
+    <!-- Example 2: Event Listeners -->
+    <div class="section">
+        <h2>2. Event Listeners (Better than inline onclick)</h2>
+        <button id="clickBtn">Click Me!</button>
+        <button id="hoverBtn">Hover Over Me!</button>
+        <div id="output"></div>
+    </div>
+
+    <!-- Example 3: Input Events -->
+    <div class="section">
+        <h2>3. Input Events (Keyboard & Input)</h2>
+        <input type="text" id="textInput" placeholder="Type something...">
+        <p>You typed: <span id="typedText"></span></p>
+        <p>Key pressed: <span id="keyPressed"></span></p>
+    </div>
+
+    <!-- Example 4: Mouse Events -->
+    <div class="section">
+        <h2>4. Mouse Events</h2>
+        <div class="box" id="mouseBox">Interact with me!</div>
+        <p id="mouseEvent">Event: None</p>
+    </div>
+
+    <!-- Example 5: Creating & Removing Elements -->
+    <div class="section">
+        <h2>5. Creating & Removing DOM Elements</h2>
+        <input type="text" id="itemInput" placeholder="Enter item name">
+        <button id="addItemBtn">Add Item</button>
+        <div id="itemList"></div>
+    </div>
+
+    <!-- Example 6: Event Delegation -->
+    <div class="section">
+        <h2>6. Event Delegation (Click on items)</h2>
+        <ul id="delegationList">
+            <li class="list-item">Item 1</li>
+            <li class="list-item">Item 2</li>
+            <li class="list-item">Item 3</li>
+        </ul>
+        <button id="addListItem">Add New Item</button>
+    </div>
+
+    <!-- Example 7: Form Events -->
+    <div class="section">
+        <h2>7. Form Events</h2>
+        <form id="myForm">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <button type="submit">Submit</button>
+        </form>
+        <p id="formOutput"></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
