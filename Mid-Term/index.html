@@ -1,27 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Character encoding for special characters -->
+   
     <meta charset="UTF-8">
     
-    <!-- Makes website responsive on mobile devices -->
+   
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Page title shown in browser tab -->
+  >
     <title>Multisensa Physiotherapy</title>
     
-    <!-- Link to our CSS stylesheet -->
+    
     <link rel="stylesheet" href="style.css">
     
-    <!-- Font Awesome for icons (free icon library) -->
+    <!-- library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Slick Carousel CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+
+       <!-- jQuery  -- slick Carousel or counter jo dalla -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    
+    <!-- Slick Carousel JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    
+
+    <script src="script.js"></script>
+
+
 </head>
+
 <body>
 
-    <!-- ========================================
-         HEADER SECTION
-         Contains logo and navigation menu
-         ======================================== -->
+   
     <header class="header">
         <div class="container">
             <!-- Logo -->
@@ -29,7 +43,7 @@
                 <img src="https://i.ibb.co/MDWHnpT5/Multi-Sensa-Logo.jpg" alt="Multisensa Logo">
             </a>
             
-            <!-- Navigation Menu -->
+      
             <nav class="nav-menu" id="nav-menu">
                 <a href="#home" class="nav-link">Home</a>
                 <a href="#services" class="nav-link">Services</a>
@@ -37,7 +51,7 @@
                 <a href="#contact" class="nav-link">Contact</a>
             </nav>
             
-            <!-- Mobile Menu Button (hamburger icon) -->
+            <!-- humberger -->
             <button class="menu-btn" id="menu-btn">
                 <i class="fas fa-bars"></i>
             </button>
@@ -45,10 +59,7 @@
     </header>
 
 
-    <!-- ========================================
-         HERO SECTION
-         Main banner with welcome message
-         ======================================== -->
+   
     <section class="hero" id="home">
         <div class="container">
             <div class="hero-content">
@@ -67,10 +78,7 @@
     </section>
 
 
-    <!-- ========================================
-         SERVICES SECTION
-         Shows our 4 main services
-         ======================================== -->
+
     <section class="services" id="services">
         <div class="container">
             <!-- Section Title -->
@@ -80,8 +88,8 @@
                 <p>Comprehensive therapy solutions for your health needs</p>
             </div>
             
-            <!-- Services Grid - 4 cards -->
-            <div class="services-grid">
+            <!-- Services Carousel -->
+            <div class="services-carousel">
                 
                 <!-- Service Card 1 -->
                 <div class="service-card">
@@ -119,15 +127,59 @@
                     <p>Evidence-based help for autism, ADHD, and developmental disorders.</p>
                 </div>
                 
+                <!-- Service Card 5 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3>Cardiac Rehab</h3>
+                    <p>Specialized rehabilitation programs for heart patients to regain strength.</p>
+                </div>
+                
+                <!-- Service Card 6 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-child"></i>
+                    </div>
+                    <h3>Pediatric Therapy</h3>
+                    <p>Specialized care for children with developmental and physical challenges.</p>
+                </div>
+                
+                <!-- Service Card 7 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-user-injured"></i>
+                    </div>
+                    <h3>Sports Injury</h3>
+                    <p>Expert treatment for athletes recovering from sports-related injuries.</p>
+                </div>
+                
+                <!-- Service Card 8 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <h3>Pain Management</h3>
+                    <p>Comprehensive approach to managing chronic pain and improving quality of life.</p>
+                </div>
+                
+            </div>
+            
+            <!-- Carousel Controls -->
+            <div class="carousel-controls">
+                <button class="carousel-btn prev-btn" id="prev-btn">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                <div class="slide-counter" id="slide-counter">Showing 1 of 8</div>
+                <button class="carousel-btn next-btn" id="next-btn">
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
             </div>
         </div>
     </section>
 
 
-    <!-- ========================================
-         ABOUT SECTION
-         Why choose us - 4 features
-         ======================================== -->
+  
     <section class="about" id="about">
         <div class="container">
             <div class="section-header">
@@ -167,10 +219,7 @@
     </section>
 
 
-    <!-- ========================================
-         CONTACT SECTION
-         Contact form and information
-         ======================================== -->
+  
     <section class="contact" id="contact">
         <div class="container">
             <div class="section-header">
@@ -180,7 +229,7 @@
             
             <div class="contact-wrapper">
                 
-                <!-- Contact Form -->
+          
                 <form class="contact-form" id="contact-form">
                     <div class="form-group">
                         <label for="name">Your Name</label>
@@ -201,8 +250,7 @@
                         <i class="fas fa-paper-plane"></i> Send Message
                     </button>
                 </form>
-                
-                <!-- Contact Info -->
+
                 <div class="contact-info">
                     <div class="info-item">
                         <i class="fas fa-map-marker-alt"></i>
@@ -228,7 +276,7 @@
                         </div>
                     </div>
                     
-                    <!-- Social Media Links -->
+                    
                     <div class="social-links">
                         <a href="https://wa.me/923147367769" target="_blank" rel="noopener noreferrer" title="WhatsApp">
                             <i class="fab fa-whatsapp"></i>
@@ -247,10 +295,7 @@
     </section>
 
 
-    <!-- ========================================
-         FOOTER SECTION
-         Bottom of the page
-         ======================================== -->
+   
     <footer class="footer">
         <div class="container">
             <p>&copy; 2025 Multisensa Physiotherapy. All rights reserved.</p>
@@ -258,7 +303,6 @@
     </footer>
 
 
-    <!-- Link to our JavaScript file -->
-    <script src="script.js"></script>
+ 
 </body>
 </html>
