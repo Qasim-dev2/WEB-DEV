@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>jQuery AJAX Learning Playground</title>
+	<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+	<main class="container">
+		<section class="card">
+			<h1>Learn AJAX Calls with jQuery</h1>
+			<p>This mini lab lets you run <strong>GET, POST, PUT, DELETE</strong> calls and inspect request/response details.</p>
+			<p>Configured for UsmanLive fake API: <code>https://usmanlive.com/wp-json/api</code>.</p>
+		</section>
+
+		<section class="card">
+			<div class="grid">
+				<div class="field span-6">
+					<label for="baseUrl">Base URL</label>
+					<input id="baseUrl" value="https://usmanlive.com/wp-json/api" placeholder="https://api.example.com" />
+				</div>
+
+				<div class="field span-6">
+					<label for="endpoint">Endpoint</label>
+					<input id="endpoint" value="/stories" placeholder="/stories or /stories/:id" />
+				</div>
+
+				<div class="field span-3">
+					<label for="storyId">Story ID (used for :id)</label>
+					<input id="storyId" value="1" placeholder="1" />
+				</div>
+
+				<div class="field span-4">
+					<label for="methodSelect">Method (for generic call)</label>
+					<select id="methodSelect">
+						<option>GET</option>
+						<option>POST</option>
+						<option>PUT</option>
+						<option>DELETE</option>
+					</select>
+				</div>
+
+				<div class="field span-3">
+					<label for="authHeaderType">Auth Header Type</label>
+					<select id="authHeaderType">
+						<option value="none">No Auth Header</option>
+						<option value="bearer">Authorization: Bearer token</option>
+						<option value="x-auth-token">x-auth-token</option>
+					</select>
+				</div>
+
+				<div class="field span-3">
+					<label for="authToken">Auth Token (optional)</label>
+					<input id="authToken" placeholder="paste token if your API requires auth" />
+				</div>
+
+				<div class="field span-3">
+					<label for="contentType">Content Type</label>
+					<select id="contentType">
+						<option value="application/json">application/json</option>
+						<option value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
+					</select>
+				</div>
+
+				<div class="field span-12">
+					<label for="payload">Request Payload (JSON for POST/PUT)</label>
+					<textarea id="payload">{
+	"title": "Learning AJAX",
+	"content": "jQuery makes HTTP calls simple."
+}</textarea>
+				</div>
+
+				<div class="field span-12">
+					<label>Run Examples</label>
+					<div class="actions">
+						<button class="btn-get" id="btnStoriesList">Stories: GET /stories</button>
+						<button class="btn-get" id="btnStoryById">Stories: GET /stories/:id</button>
+						<button class="btn-post" id="btnStoryPost">Stories: POST /stories</button>
+						<button class="btn-put" id="btnStoryPut">Stories: PUT /stories/:id</button>
+						<button class="btn-delete" id="btnStoryDelete">Stories: DELETE /stories/:id</button>
+						<button class="btn-post" id="btnAuthRegister">Auth: POST /auth/register</button>
+						<button class="btn-post" id="btnAuthLogin">Auth: POST /auth/login</button>
+						<button class="btn-post" id="btnAuthProtected">Auth: POST /auth/protected</button>
+						<button class="btn-clear" id="btnGet">Quick GET</button>
+						<button class="btn-post" id="btnPost">Quick POST</button>
+						<button class="btn-put" id="btnPut">Quick PUT</button>
+						<button class="btn-delete" id="btnDelete">Quick DELETE</button>
+						<button class="btn-clear" id="btnGeneric">Use Selected Method</button>
+						<button class="btn-clear" id="btnClear">Clear Output</button>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="card">
+			<div class="status" id="status">Status: waiting for request...</div>
+			<pre id="output">Response will appear here...</pre>
+		</section>
+
+		<section class="card">
+			<p><strong>How this works:</strong></p>
+			<p>1) Build URL = Base URL + Endpoint. If endpoint contains <code>:id</code>, it is replaced using Story ID input.</p>
+			<p>2) Call <code>$.ajax({...})</code> with method, headers, and body.</p>
+			<p>3) For protected route, set header type to <code>x-auth-token</code> and provide token from login response.</p>
+			<p>4) Login helper tries to auto-detect token and fill the token box for you.</p>
+		</section>
+	</main>
+
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	<script src="script.js"></script>
+</body>
+</html>

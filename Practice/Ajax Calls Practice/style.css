@@ -1,0 +1,151 @@
+:root {
+	--bg: #f4f7fb;
+	--card: #ffffff;
+	--ink: #152238;
+	--muted: #56657d;
+	--accent: #0e9f6e;
+	--accent-2: #1f6feb;
+	--danger: #d73a49;
+	--line: #dbe3ee;
+	--shadow: 0 8px 24px rgba(21, 34, 56, 0.08);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+	background: radial-gradient(circle at top right, #d7f7eb 0%, var(--bg) 45%, #e9f0ff 100%);
+	color: var(--ink);
+	min-height: 100vh;
+	padding: 2rem 1rem;
+}
+
+.container {
+	width: min(980px, 100%);
+	margin: 0 auto;
+	display: grid;
+	gap: 1.25rem;
+}
+
+.card {
+	background: var(--card);
+	border: 1px solid var(--line);
+	border-radius: 14px;
+	box-shadow: var(--shadow);
+	padding: 1rem;
+}
+
+h1 {
+	margin: 0 0 0.6rem;
+	font-size: clamp(1.4rem, 2vw, 2rem);
+}
+
+p {
+	margin: 0.25rem 0;
+	color: var(--muted);
+	line-height: 1.55;
+}
+
+.grid {
+	display: grid;
+	grid-template-columns: repeat(12, 1fr);
+	gap: 0.8rem;
+}
+
+.field {
+	display: flex;
+	flex-direction: column;
+	gap: 0.35rem;
+}
+
+.span-6 { grid-column: span 6; }
+.span-4 { grid-column: span 4; }
+.span-3 { grid-column: span 3; }
+.span-12 { grid-column: span 12; }
+
+label {
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: var(--ink);
+}
+
+input,
+select,
+textarea,
+button {
+	border: 1px solid var(--line);
+	border-radius: 10px;
+	padding: 0.65rem 0.75rem;
+	font: inherit;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 2px solid #bae3ff;
+	border-color: #8bc2ff;
+}
+
+textarea {
+	min-height: 150px;
+	resize: vertical;
+	font-family: Consolas, "Courier New", monospace;
+	font-size: 0.92rem;
+}
+
+.actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.55rem;
+}
+
+button {
+	cursor: pointer;
+	border: none;
+	color: #fff;
+	transition: transform 0.15s ease, opacity 0.2s ease;
+}
+
+button:hover {
+	transform: translateY(-1px);
+	opacity: 0.95;
+}
+
+.btn-get { background: var(--accent-2); }
+.btn-post { background: var(--accent); }
+.btn-put { background: #e68a00; }
+.btn-delete { background: var(--danger); }
+.btn-clear { background: #6b7280; }
+
+.status {
+	font-weight: 700;
+	margin-bottom: 0.5rem;
+}
+
+pre {
+	background: #0f172a;
+	color: #e2e8f0;
+	border-radius: 10px;
+	padding: 0.8rem;
+	overflow: auto;
+	margin: 0;
+	line-height: 1.45;
+}
+
+code {
+	background: #eef3f9;
+	color: #1d3b5f;
+	border-radius: 5px;
+	padding: 0.1rem 0.35rem;
+}
+
+@media (max-width: 768px) {
+	.span-6,
+	.span-4,
+	.span-3 {
+		grid-column: span 12;
+	}
+}
