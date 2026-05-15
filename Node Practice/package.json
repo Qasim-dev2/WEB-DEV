@@ -1,0 +1,19 @@
+{
+  "name": "node-practice",
+  "version": "1.0.0",
+  "description": "A tiny Node.js backend practice project",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "backend"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

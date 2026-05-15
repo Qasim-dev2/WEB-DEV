@@ -1,0 +1,574 @@
+/* ========================================
+   CSS VARIABLES
+   These are like "containers" that store values
+   We can reuse them throughout our CSS
+   ======================================== */
+:root {
+    /* Main Colors - Teal & Gold theme */
+    --primary-color: #1F3D3F;      /* Dark teal - main brand color */
+    --secondary-color: #33A9B1;     /* Light teal - for accents */
+    --accent-gold: #FFC857;         /* Gold - for buttons/highlights */
+    
+    /* Background Colors */
+    --body-bg: #DEE8DE;             /* Light green-gray page background */
+    --white: #FFFFFF;               /* White for cards */
+    --light-bg: #f8f9fa;            /* Very light gray */
+    
+    /* Text Colors */
+    --text-dark: #1C1C1C;           /* Dark text for headings */
+    --text-body: #4D4D4D;           /* Gray text for paragraphs */
+    
+    /* WhatsApp Green */
+    --whatsapp: #25D366;
+    
+    /* Fonts */
+    --font-heading: Georgia, serif;
+    --font-body: Arial, sans-serif;
+}
+
+
+/* ========================================
+   RESET & BASE STYLES
+   Removes default browser styling
+   ======================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;  /* Smooth scrolling when clicking nav links */
+}
+
+body {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-body);
+    background-color: var(--body-bg);
+}
+
+/* Headings use serif font */
+h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+    color: var(--text-dark);
+    line-height: 1.3;
+}
+
+/* Remove underline from links */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Make images responsive */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+
+/* ========================================
+   CONTAINER
+   Centers content and adds padding
+   ======================================== */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+
+/* ========================================
+   BUTTONS
+   Reusable button styles
+   ======================================== */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+/* Primary button - gold background */
+.btn-primary {
+    background: var(--accent-gold);
+    color: var(--text-dark);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 200, 87, 0.4);
+}
+
+/* WhatsApp button - green */
+.btn-whatsapp {
+    background: var(--whatsapp);
+    color: var(--white);
+}
+
+.btn-whatsapp:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+}
+
+/* Full width button */
+.btn-full {
+    width: 100%;
+}
+
+
+/* ========================================
+   HEADER SECTION
+   Fixed navigation bar at top
+   ======================================== */
+.header {
+    background: var(--white);
+    padding: 15px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;  /* Stays on top of other content */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Logo */
+.logo img {
+    height: 50px;
+    border-radius: 8px;
+}
+
+/* Navigation Links */
+.nav-menu {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-link {
+    color: var(--text-dark);
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: var(--secondary-color);
+}
+
+/* Mobile Menu Button - hidden on desktop */
+.menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--primary-color);
+    cursor: pointer;
+    padding: 8px;
+    transition: transform 0.3s ease;
+}
+
+.menu-btn:hover {
+    transform: scale(1.1);
+}
+
+.menu-btn:active {
+    transform: scale(0.95);
+}
+
+
+/* ========================================
+   HERO SECTION
+   Main banner with teal gradient
+   ======================================== */
+.hero {
+    /* Gradient from dark to light teal */
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: var(--white);
+    padding: 150px 0 100px;  /* Extra top padding for fixed header */
+    text-align: center;
+}
+
+.hero-content {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.hero h1 {
+    font-size: 48px;
+    color: var(--white);
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 18px;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+
+/* ========================================
+   SECTION HEADER
+   Reusable section title styling
+   ======================================== */
+.section-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.tag {
+    display: inline-block;
+    background: var(--secondary-color);
+    color: var(--white);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.section-header h2 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.section-header p {
+    color: var(--text-body);
+    font-size: 18px;
+}
+
+
+/* ========================================
+   SERVICES SECTION
+   4 service cards in a grid
+   ======================================== */
+.services {
+    padding: 80px 0;
+    background: var(--white);
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);  /* 4 equal columns */
+    gap: 30px;
+}
+
+.service-card {
+    background: var(--light-bg);
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.service-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+.service-icon i {
+    font-size: 28px;
+    color: var(--white);
+}
+
+.service-card h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.service-card p {
+    font-size: 14px;
+    color: var(--text-body);
+}
+
+
+/* ========================================
+   ABOUT SECTION
+   4 feature cards
+   ======================================== */
+.about {
+    padding: 80px 0;
+    background: var(--body-bg);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.feature-card {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    border-top: 4px solid var(--accent-gold);
+}
+
+.feature-card i {
+    font-size: 40px;
+    color: var(--secondary-color);
+    margin-bottom: 15px;
+}
+
+.feature-card h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.feature-card p {
+    font-size: 14px;
+    color: var(--text-body);
+}
+
+
+/* ========================================
+   CONTACT SECTION
+   Form on left, info on right
+   ======================================== */
+.contact {
+    padding: 80px 0;
+    background: var(--white);
+}
+
+.contact-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;  /* Two equal columns */
+    gap: 50px;
+}
+
+/* Form Styling */
+.contact-form {
+    background: var(--light-bg);
+    padding: 30px;
+    border-radius: 12px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-dark);
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: var(--font-body);
+    transition: border-color 0.3s;
+}
+
+/* Focus state - teal border */
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+}
+
+/* Contact Info */
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.info-item i {
+    font-size: 24px;
+    color: var(--secondary-color);
+    width: 30px;
+}
+
+.info-item h4 {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.info-item p {
+    font-size: 14px;
+}
+
+/* Social Links */
+.social-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.social-links a {
+    width: 45px;
+    height: 45px;
+    background: var(--light-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--primary-color);
+    transition: all 0.3s;
+}
+
+.social-links a:hover {
+    background: var(--secondary-color);
+    color: var(--white);
+    transform: translateY(-3px);
+}
+
+
+/* ========================================
+   FOOTER
+   Simple centered footer
+   ======================================== */
+.footer {
+    background: var(--primary-color);
+    color: var(--white);
+    text-align: center;
+    padding: 25px 0;
+}
+
+.footer p {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+
+/* ========================================
+   RESPONSIVE DESIGN
+   Adjustments for smaller screens
+   ======================================== */
+
+/* Tablet - 992px and below */
+@media (max-width: 992px) {
+    /* 2 columns instead of 4 */
+    .services-grid,
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile - 768px and below */
+@media (max-width: 768px) {
+    /* Show hamburger menu button */
+    .menu-btn {
+        display: block;
+    }
+    
+    /* Hide navigation menu by default */
+    .nav-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--white);
+        flex-direction: column;
+        padding: 0;
+        gap: 0;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.4s ease;
+    }
+    
+    /* Show menu when active class is added via JavaScript */
+    .nav-menu.active {
+        display: flex;
+        max-height: 300px;
+        opacity: 1;
+        padding: 20px;
+    }
+    
+    /* Mobile nav links - larger touch targets */
+    .nav-menu .nav-link {
+        padding: 12px 15px;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 16px;
+    }
+    
+    .nav-menu .nav-link:last-child {
+        border-bottom: none;
+    }
+    
+    .nav-menu .nav-link:hover {
+        background: var(--light-bg);
+        border-radius: 8px;
+    }
+    
+    /* Smaller hero text */
+    .hero h1 {
+        font-size: 32px;
+    }
+    
+    /* Section titles */
+    .section-header h2 {
+        font-size: 28px;
+    }
+    
+    /* Single column for contact */
+    .contact-wrapper {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Small Mobile - 480px and below */
+@media (max-width: 480px) {
+    /* Single column cards */
+    .services-grid,
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Stack buttons */
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .hero-buttons .btn {
+        width: 100%;
+        max-width: 250px;
+    }
+}
