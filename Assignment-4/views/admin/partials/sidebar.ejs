@@ -1,0 +1,64 @@
+<!-- Mobile overlay (click to close sidebar) -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ═══════════════════════════════════════════
+     ADMIN SIDEBAR
+═══════════════════════════════════════════ -->
+<aside class="admin-sidebar" id="adminSidebar">
+
+    <!-- ── Brand / Logo ── -->
+    <div class="sidebar-brand">
+        <div class="brand-icon">
+            <i class="fas fa-hospital-user"></i>
+        </div>
+        <div>
+            <p class="brand-name mb-0">Multisensa</p>
+            <span class="brand-sub">Admin Panel</span>
+        </div>
+    </div>
+
+    <!-- ── Main Navigation ── -->
+    <nav class="sidebar-nav">
+        <span class="nav-section-label">Management</span>
+
+        <a href="/admin"
+           class="sidebar-nav-item <%= activePage === 'dashboard' ? 'active' : '' %>">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="/admin/doctors"
+           class="sidebar-nav-item <%= activePage === 'doctors' ? 'active' : '' %>">
+            <i class="fas fa-user-md"></i>
+            <span>All Doctors</span>
+        </a>
+
+        <a href="/admin/doctors/new"
+           class="sidebar-nav-item <%= activePage === 'addDoctor' ? 'active' : '' %>">
+            <i class="fas fa-user-plus"></i>
+            <span>Add Doctor</span>
+        </a>
+
+        <span class="nav-section-label">Website</span>
+
+        <a href="/doctors" target="_blank" class="sidebar-nav-item">
+            <i class="fas fa-users-medical"></i>
+            <span>Specialists Page</span>
+        </a>
+
+        <a href="/" target="_blank" class="sidebar-nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home Page</span>
+        </a>
+    </nav>
+
+    <!-- ── Footer ── -->
+    <div class="sidebar-footer">
+        <a href="#" class="sidebar-nav-item danger"
+           onclick="return confirm('Are you sure you want to logout?')">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+
+</aside>

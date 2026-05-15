@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Doctor — Multisensa Admin</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="/css/admin.css" rel="stylesheet">
+</head>
+<body class="admin-body">
+
+<%- include('partials/sidebar', { activePage: 'addDoctor' }) %>
+
+<div class="admin-main">
+
+    <!-- ── Top Bar ── -->
+    <div class="admin-topbar">
+        <div class="topbar-left">
+            <button class="sidebar-toggle-btn" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="topbar-page-title">
+                <h4><i class="fas fa-user-plus me-2" style="color:#0d9488;"></i>Add New Doctor</h4>
+                <small>Fill in the form to register a new specialist</small>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <span class="admin-role-badge"><i class="fas fa-shield-alt me-1"></i>Admin</span>
+            <a href="/admin/doctors" class="btn-admin-secondary">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="admin-content">
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb" style="font-size:13px;background:none;padding:0;margin:0;">
+                <li class="breadcrumb-item"><a href="/admin" style="color:#0d9488;text-decoration:none;">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="/admin/doctors" style="color:#0d9488;text-decoration:none;">Doctors</a></li>
+                <li class="breadcrumb-item active" style="color:#6b7280;">Add Doctor</li>
+            </ol>
+        </nav>
+
+        <!-- ── Validation Errors ── -->
+        <% if (errors && errors.length > 0) { %>
+        <div class="errors-box mb-4">
+            <h6><i class="fas fa-exclamation-circle"></i> Please fix the following errors:</h6>
+            <ul>
+                <% errors.forEach(err => { %>
+                <li><%= err %></li>
+                <% }) %>
+            </ul>
+        </div>
+        <% } %>
+
+        <!-- ── Form Card ── -->
+        <form method="POST" action="/admin/doctors" enctype="multipart/form-data" id="addDoctorForm">
+
+            <div class="row g-3">
+
+                <!-- Left Column — Text Fields -->
+                <div class="col-xl-8">
+                    <div class="admin-form-card">
+                        <div class="admin-form-header">
+                            <h4><i class="fas fa-id-card me-2"></i>Doctor Information</h4>
+                            <p>Enter complete and accurate details for the specialist</p>
+                        </div>
+
+                        <div class="admin-form-body">
+                            <div class="row g-3">
+
+                                <!-- Full Name -->
+                                <div class="col-md-12">
+                                    <label class="form-label" for="name">
+                                        <i class="fas fa-user me-1" style="color:#0d9488;"></i>
+                                        Full Name <span style="color:#ef4444;">*</span>
+                                    </label>
+                                    <input type="text"
+                                           id="name"
+                                           name="name"
+                                           class="form-control <%= errors && errors.some(e => e.includes('name')) ? 'is-invalid' : '' %>"
+                                           value="<%= formData.name || '' %>"
+                                           placeholder="e.g. Dr. Ahmed Raza"
+                                           required>
+                                    <div class="form-text" style="font-size:12px;color:#9ca3af;">Include "Dr." prefix for doctors</div>
+                                </div>
+
+                                <!-- Qualification -->
+                                <div class="col-md-12">
+                                    <label class="form-label" for="qualification">
+                                        <i class="fas fa-graduation-cap me-1" style="color:#0d9488;"></i>
+                                        Qualification <span style="color:#ef4444;">*</span>
+                                    </label>
+                                    <input type="text"
+                                           id="qualification"
+                                           name="qualification"
+                                           class="form-control"
+                                           value="<%= formData.qualification || '' %>"
+                                           placeholder="e.g. DPT, MSPT (UK)"
+                                           required>
+                                </div>
+
+                                <!-- Category & Experience -->
+                                <div class="col-md-6">
+                                    <label class="form-label" for="category">
+                                        <i class="fas fa-stethoscope me-1" style="color:#0d9488;"></i>
+                                        Specialization <span style="color:#ef4444;">*</span>
+                                    </label>
+                                    <select id="category" name="category" class="form-select" required>
+                                        <option value="">— Select Specialization —</option>
+                                        <% categories.forEach(cat => { %>
+                                        <option value="<%= cat %>"
+                                                <%= (formData.category === cat) ? 'selected' : '' %>>
+                                            <%= cat %>
+                                        </option>
+                                        <% }) %>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label" for="experience">
+                                        <i class="fas fa-briefcase me-1" style="color:#0d9488;"></i>
+                                        Years of Experience
+                                    </label>
+                                    <input type="number"
+                                           id="experience"
+                                           name="experience"
+                                           class="form-control"
+                                           value="<%= formData.experience || '' %>"
+                                           placeholder="e.g. 8"
+                                           min="0"
+                                           max="60">
+                                </div>
+
+                                <!-- Charges & Rating -->
+                                <div class="col-md-6">
+                                    <label class="form-label" for="charges">
+                                        <i class="fas fa-money-bill-wave me-1" style="color:#0d9488;"></i>
+                                        Consultation Charges (PKR) <span style="color:#ef4444;">*</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" style="background:#f9fafb;border:1.5px solid #e5e7eb;border-right:none;border-radius:8px 0 0 8px;font-size:13px;font-weight:600;color:#6b7280;">PKR</span>
+                                        <input type="number"
+                                               id="charges"
+                                               name="charges"
+                                               class="form-control"
+                                               value="<%= formData.charges || '' %>"
+                                               placeholder="e.g. 2500"
+                                               min="0"
+                                               required
+                                               style="border-left:none;border-radius:0 8px 8px 0;">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label" for="rating">
+                                        <i class="fas fa-star me-1" style="color:#f59e0b;"></i>
+                                        Patient Rating (1–5)
+                                    </label>
+                                    <input type="number"
+                                           id="rating"
+                                           name="rating"
+                                           class="form-control"
+                                           value="<%= formData.rating || '4.0' %>"
+                                           placeholder="e.g. 4.5"
+                                           min="1"
+                                           max="5"
+                                           step="0.1">
+                                </div>
+
+                                <!-- Availability -->
+                                <div class="col-md-12">
+                                    <label class="form-label" for="availability">
+                                        <i class="fas fa-calendar-check me-1" style="color:#0d9488;"></i>
+                                        Appointment Availability
+                                    </label>
+                                    <select id="availability" name="availability" class="form-select">
+                                        <option value="Available"       <%= (formData.availability === 'Available'       || !formData.availability) ? 'selected' : '' %>>
+                                            ✅ Available
+                                        </option>
+                                        <option value="Limited Slots"   <%= formData.availability === 'Limited Slots'   ? 'selected' : '' %>>
+                                            ⚠️ Limited Slots
+                                        </option>
+                                        <option value="Fully Booked"    <%= formData.availability === 'Fully Booked'    ? 'selected' : '' %>>
+                                            ❌ Fully Booked
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Description -->
+                                <div class="col-md-12">
+                                    <label class="form-label" for="description">
+                                        <i class="fas fa-align-left me-1" style="color:#0d9488;"></i>
+                                        Bio / Description <span style="color:#ef4444;">*</span>
+                                    </label>
+                                    <textarea id="description"
+                                              name="description"
+                                              class="form-control"
+                                              rows="4"
+                                              placeholder="Write a brief professional bio about the specialist..."
+                                              required><%= formData.description || '' %></textarea>
+                                    <div class="form-text" style="font-size:12px;color:#9ca3af;">
+                                        Aim for 2–3 sentences covering expertise and experience.
+                                    </div>
+                                </div>
+
+                            </div><!-- /row -->
+                        </div><!-- /admin-form-body -->
+                    </div><!-- /admin-form-card -->
+                </div><!-- /col-xl-8 -->
+
+                <!-- Right Column — Image Upload -->
+                <div class="col-xl-4">
+                    <div class="admin-form-card" style="height:fit-content;">
+                        <div class="admin-form-header">
+                            <h4><i class="fas fa-image me-2"></i>Profile Photo</h4>
+                            <p>Upload a professional photo of the doctor</p>
+                        </div>
+                        <div class="admin-form-body">
+
+                            <!-- Image Preview & Upload Zone -->
+                            <div class="upload-zone" id="uploadZone">
+                                <input type="file"
+                                       id="imageInput"
+                                       name="image"
+                                       accept="image/jpeg,image/jpg,image/png,image/webp">
+                                <img id="imagePreview" src="" alt="Preview" style="display:none;max-width:100%;max-height:165px;object-fit:contain;border-radius:8px;">
+                                <div class="upload-placeholder" id="uploadPlaceholder">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p><span>Click to upload</span> or drag & drop</p>
+                                    <p style="font-size:11px;margin-top:4px;">JPG, PNG, WEBP — Max 5 MB</p>
+                                </div>
+                            </div>
+
+                            <p class="mt-2 mb-0" style="font-size:12px;color:#9ca3af;text-align:center;">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Leave empty to use auto-generated avatar
+                            </p>
+
+                            <!-- Tips -->
+                            <div style="background:#f0fdf9;border-radius:8px;padding:14px;margin-top:16px;">
+                                <p style="font-size:12px;font-weight:700;color:#065f46;margin:0 0 6px;">
+                                    <i class="fas fa-lightbulb me-1"></i> Photo Tips
+                                </p>
+                                <ul style="font-size:12px;color:#047857;margin:0;padding-left:16px;">
+                                    <li>Use a professional headshot</li>
+                                    <li>Clear white/neutral background</li>
+                                    <li>Good lighting is important</li>
+                                    <li>Square crop works best</li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div><!-- /admin-form-card -->
+
+                    <!-- Form Actions -->
+                    <div style="margin-top:16px;display:flex;flex-direction:column;gap:10px;">
+                        <button type="submit" class="btn-admin-primary" style="width:100%;justify-content:center;padding:13px;">
+                            <i class="fas fa-save"></i> Save Doctor
+                        </button>
+                        <a href="/admin/doctors" class="btn-admin-secondary" style="width:100%;justify-content:center;padding:13px;">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+
+                </div><!-- /col-xl-4 -->
+
+            </div><!-- /row -->
+
+        </form>
+
+    </div><!-- /admin-content -->
+</div><!-- /admin-main -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ── Mobile Sidebar ────────────────────────────────────
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const sidebar   = document.getElementById('adminSidebar');
+    const overlay   = document.getElementById('sidebarOverlay');
+
+    toggleBtn?.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+    });
+    overlay?.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+    });
+
+    // ── Image Preview Before Upload ───────────────────────
+    const imageInput       = document.getElementById('imageInput');
+    const imagePreview     = document.getElementById('imagePreview');
+    const uploadPlaceholder= document.getElementById('uploadPlaceholder');
+    const uploadZone       = document.getElementById('uploadZone');
+
+    imageInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        // Client-side size check (5 MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('File too large! Maximum allowed size is 5 MB.');
+            this.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = 'block';
+            uploadPlaceholder.style.display = 'none';
+            uploadZone.classList.add('has-image');
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // ── Form Submit Loader ────────────────────────────────
+    document.getElementById('addDoctorForm').addEventListener('submit', function () {
+        const btn = this.querySelector('button[type="submit"]');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        btn.disabled = true;
+    });
+</script>
+
+</body>
+</html>
