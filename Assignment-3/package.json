@@ -1,0 +1,20 @@
+{
+  "name": "assignment-3",
+  "version": "1.0.0",
+  "description": "Multisensa Rehabilitation Center — Express + EJS + MongoDB Doctor Catalog",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node seed.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": ["express", "ejs", "mongodb", "mongoose", "rehabilitation"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "mongoose": "^7.6.3"
+  }
+}
