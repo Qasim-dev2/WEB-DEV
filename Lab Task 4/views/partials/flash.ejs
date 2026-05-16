@@ -1,0 +1,12 @@
+<% if (success && success.length > 0) { success.forEach(m => { %>
+<div class="alert alert-success alert-dismissible fade show border-0 d-flex align-items-start gap-2 shadow-sm" role="alert">
+  <i class="fa-solid fa-circle-check mt-1"></i><div><%= m %></div>
+  <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+</div>
+<% }) } %>
+<% if (error && error.length > 0) { error.forEach(m => { %>
+<div class="alert alert-danger alert-dismissible fade show border-0 d-flex align-items-start gap-2 shadow-sm" role="alert">
+  <i class="fa-solid fa-circle-exclamation mt-1"></i><div><%= m %></div>
+  <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+</div>
+<% }) } %>
