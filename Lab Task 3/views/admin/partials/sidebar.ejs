@@ -53,9 +53,19 @@
     </nav>
 
     <!-- ── Footer ── -->
+    <!-- ── User Info ── -->
+    <% if (currentUser) { %>
+    <div class="sidebar-user">
+      <div class="sidebar-user-avatar"><%= currentUser.name.charAt(0).toUpperCase() %></div>
+      <div class="sidebar-user-info">
+        <div class="fw-semibold text-truncate" style="max-width:140px;font-size:.85rem"><%= currentUser.name %></div>
+        <small class="text-muted text-truncate d-block" style="max-width:140px;font-size:.72rem"><%= currentUser.email %></small>
+      </div>
+    </div>
+    <% } %>
+
     <div class="sidebar-footer">
-        <a href="#" class="sidebar-nav-item danger"
-           onclick="return confirm('Are you sure you want to logout?')">
+        <a href="/logout" class="sidebar-nav-item danger">
             <i class="fas fa-sign-out-alt"></i>
             <span>Logout</span>
         </a>

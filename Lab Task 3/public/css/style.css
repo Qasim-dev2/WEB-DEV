@@ -572,3 +572,173 @@ img {
         max-width: 250px;
     }
 }
+
+/* ===================================================
+   AUTH / TEAL UTILITY CLASSES  (added by Lab Task 3)
+=================================================== */
+:root {
+    --teal: #0d9488;
+    --teal-dark: #0f766e;
+    --teal-darker: #115e59;
+}
+
+.bg-teal { background-color: var(--teal) !important; }
+.text-teal { color: var(--teal) !important; }
+.btn-teal {
+    background-color: var(--teal);
+    color: #fff;
+    border: none;
+    transition: background .2s;
+}
+.btn-teal:hover { background-color: var(--teal-dark); color: #fff; }
+.btn-outline-teal {
+    color: var(--teal);
+    border: 2px solid var(--teal);
+    background: transparent;
+    transition: all .2s;
+}
+.btn-outline-teal:hover { background: var(--teal); color: #fff; }
+.badge.bg-teal { background-color: var(--teal) !important; }
+
+/* ── Auth Layout ── */
+.auth-page {
+    background: linear-gradient(135deg, #f0fdf9 0%, #ccfbf1 60%, #a7f3d0 100%);
+    min-height: 100vh;
+}
+.auth-wrapper {
+    display: flex;
+    align-items: center;
+    min-height: calc(100vh - 70px);
+    padding: 2rem 0;
+}
+.auth-card { border-radius: 1.25rem !important; }
+.auth-icon {
+    width: 68px; height: 68px;
+    background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto;
+    color: #fff;
+    font-size: 1.6rem;
+}
+
+/* ── User avatar (small, in navbar) ── */
+.user-avatar-sm {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+    font-weight: 700; font-size: 0.85rem;
+    border: 2px solid rgba(255,255,255,0.5);
+}
+
+/* ── Profile avatar (large) ── */
+.profile-avatar {
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+    color: #fff;
+    font-size: 2.5rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+}
+
+/* ── Sidebar user block ── */
+.sidebar-user {
+    display: flex; align-items: center; gap: .6rem;
+    padding: .8rem 1rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: auto;
+}
+.sidebar-user-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    color: #fff; font-weight: 700; font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+
+/* ===================================================
+   AUTH / TEAL UTILITY CLASSES  (added by Lab Task 3)
+=================================================== */
+:root {
+    --teal: #0d9488;
+    --teal-dark: #0f766e;
+    --teal-darker: #115e59;
+}
+
+.bg-teal { background-color: var(--teal) !important; }
+.text-teal { color: var(--teal) !important; }
+.btn-teal {
+    background-color: var(--teal);
+    color: #fff;
+    border: none;
+    transition: background .2s;
+}
+.btn-teal:hover { background-color: var(--teal-dark); color: #fff; }
+.btn-outline-teal {
+    color: var(--teal);
+    border: 2px solid var(--teal);
+    background: transparent;
+    transition: all .2s;
+}
+.btn-outline-teal:hover { background: var(--teal); color: #fff; }
+.badge.bg-teal { background-color: var(--teal) !important; }
+
+/* ── Auth Layout ── */
+.auth-page {
+    background: linear-gradient(135deg, #f0fdf9 0%, #ccfbf1 60%, #a7f3d0 100%);
+    min-height: 100vh;
+}
+.auth-wrapper {
+    display: flex;
+    align-items: center;
+    min-height: calc(100vh - 70px);
+    padding: 2rem 0;
+}
+.auth-card { border-radius: 1.25rem !important; }
+.auth-icon {
+    width: 68px; height: 68px;
+    background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto;
+    color: #fff;
+    font-size: 1.6rem;
+}
+
+/* ── User avatar (small, in navbar) ── */
+.user-avatar-sm {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+    font-weight: 700; font-size: 0.85rem;
+    border: 2px solid rgba(255,255,255,0.5);
+}
+
+/* ── Profile avatar (large) ── */
+.profile-avatar {
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+    color: #fff;
+    font-size: 2.5rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+}
+
+/* ── Sidebar user block ── */
+.sidebar-user {
+    display: flex; align-items: center; gap: .6rem;
+    padding: .8rem 1rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: auto;
+}
+.sidebar-user-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    color: #fff; font-weight: 700; font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}

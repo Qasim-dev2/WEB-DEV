@@ -156,3 +156,61 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('4. Active navigation highlighting');
     
 });
+
+// ========================================
+// PASSWORD SHOW/HIDE TOGGLES  (Lab Task 3)
+// ========================================
+function initToggle(btnId, inputId) {
+    var btn   = document.getElementById(btnId);
+    var input = document.getElementById(inputId);
+    if (!btn || !input) return;
+    btn.addEventListener('click', function () {
+        var isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        var icon = btn.querySelector('i');
+        if (icon) {
+            icon.classList.toggle('fa-eye',       !isPassword);
+            icon.classList.toggle('fa-eye-slash',  isPassword);
+        }
+    });
+}
+
+initToggle('togglePasswordBtn', 'password');
+initToggle('toggleConfirmBtn',  'confirmPassword');
+
+// Auto-dismiss flash alerts after 5 seconds
+setTimeout(function () {
+    document.querySelectorAll('.alert.fade.show').forEach(function (el) {
+        var bsAlert = bootstrap && bootstrap.Alert ? new bootstrap.Alert(el) : null;
+        if (bsAlert) bsAlert.close(); else el.remove();
+    });
+}, 5000);
+
+// ========================================
+// PASSWORD SHOW/HIDE TOGGLES  (Lab Task 3)
+// ========================================
+function initToggle(btnId, inputId) {
+    var btn   = document.getElementById(btnId);
+    var input = document.getElementById(inputId);
+    if (!btn || !input) return;
+    btn.addEventListener('click', function () {
+        var isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        var icon = btn.querySelector('i');
+        if (icon) {
+            icon.classList.toggle('fa-eye',       !isPassword);
+            icon.classList.toggle('fa-eye-slash',  isPassword);
+        }
+    });
+}
+
+initToggle('togglePasswordBtn', 'password');
+initToggle('toggleConfirmBtn',  'confirmPassword');
+
+// Auto-dismiss flash alerts after 5 seconds
+setTimeout(function () {
+    document.querySelectorAll('.alert.fade.show').forEach(function (el) {
+        var bsAlert = bootstrap && bootstrap.Alert ? new bootstrap.Alert(el) : null;
+        if (bsAlert) bsAlert.close(); else el.remove();
+    });
+}, 5000);

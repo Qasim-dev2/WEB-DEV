@@ -1,12 +1,13 @@
-// ─────────────────────────────────────────────────────────
-// routes/admin.js — Admin Panel Routes
-// All routes prefixed with /admin (mounted in server.js)
-// ─────────────────────────────────────────────────────────
-
+// routes/admin.js — Admin Panel Routes (ALL protected by isLoggedIn + isAdmin)
 const express    = require('express');
 const router     = express.Router();
 const upload     = require('../config/multer');
 const adminCtrl  = require('../controllers/adminController');
+const isLoggedIn = require('../middleware/isLoggedIn');
+const isAdmin    = require('../middleware/isAdmin');
+
+// Apply auth to every /admin route — must be logged in AND be admin
+router.use(isLoggedIn, isAdmin);
 
 // ── Dashboard ─────────────────────────────────────────────
 // GET /admin

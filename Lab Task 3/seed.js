@@ -5,6 +5,7 @@
 require('dotenv').config(); // Load environment variables from .env
 const mongoose = require('mongoose');
 const Doctor = require('./models/Doctor');
+const User   = require('./models/User');
 
 // ============================================================
 // SAMPLE DOCTOR DATA — 30 realistic Pakistani doctors
@@ -365,15 +366,40 @@ const seedDatabase = async () => {
         await mongoose.connect(process.env.MONGO_URI);
         console.log('✅ Connected to MongoDB');
 
-        // Step 2: Delete all existing doctor records
+        // Step 2: Delete all existing records
+        await User.deleteMany({});
+        console.log('🗑️  Cleared existing user records');
         await Doctor.deleteMany({});
         console.log('🗑️  Cleared existing doctor records');
 
-        // Step 3: Insert all sample doctors at once
+        // Step 3: Create demo users (passwords hashed by pre-save hook)
+        const adminUser = await User.create({
+            name    : 'Admin User',
+            email   : 'admin@multisensa.com',
+            password: 'Admin@123',
+            role    : 'admin',
+        });
+        const patientUser = await User.create({
+            name    : 'Ahmed Khan',
+            email   : 'patient@multisensa.com',
+            password: 'Patient@123',
+            role    : 'customer',
+        });
+        const doctorUser = await User.create({
+            name    : 'Dr. Talha Qureshi',
+            email   : 'doctor@multisensa.com',
+            password: 'Doctor@123',
+            role    : 'doctor',
+        });
+        console.log(`👤 Created admin  : ${adminUser.email}`);
+        console.log(`👤 Created patient: ${patientUser.email}`);
+        console.log(`👤 Created doctor : ${doctorUser.email}`);
+
+        // Step 4: Insert all sample doctors at once
         const inserted = await Doctor.insertMany(doctors);
         console.log(`🌱 Successfully seeded ${inserted.length} doctor records`);
 
-        // Step 4: Disconnect cleanly
+        // Step 5: Disconnect cleanly
         await mongoose.disconnect();
         console.log('🔌 Database connection closed');
         console.log('\n✨ Seeding complete! Run: npm start');
