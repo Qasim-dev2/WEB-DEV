@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Patient Dashboard — Multisensa</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+        :root {
+            --patient-primary : #0d9488;
+            --patient-light   : #f0fdfa;
+            --patient-accent  : #14b8a6;
+            --patient-dark    : #0f766e;
+            --card-radius     : 16px;
+        }
+        body { background: #f8fffe; font-family: 'Segoe UI', sans-serif; }
+
+        /* ── Hero Banner ── */
+        .patient-hero {
+            background: linear-gradient(135deg, var(--patient-dark) 0%, var(--patient-accent) 60%, #6ee7b7 100%);
+            border-radius: 0 0 40px 40px;
+            padding: 3rem 2rem 4rem;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        .patient-hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .hero-avatar {
+            width: 80px; height: 80px;
+            background: rgba(255,255,255,0.2);
+            border: 3px solid rgba(255,255,255,0.5);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; font-weight: 700; color: #fff;
+            backdrop-filter: blur(4px);
+        }
+        .hero-badge {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: #fff; border-radius: 20px;
+            padding: 4px 14px; font-size: 0.75rem;
+            backdrop-filter: blur(4px);
+        }
+
+        /* ── Stats Row ── */
+        .stat-card {
+            border: none; border-radius: var(--card-radius);
+            background: #fff;
+            box-shadow: 0 2px 15px rgba(13,148,136,.08);
+            transition: transform .2s, box-shadow .2s;
+        }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(13,148,136,.15); }
+        .stat-icon {
+            width: 52px; height: 52px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem;
+        }
+        .si-teal   { background: #f0fdfa; color: var(--patient-primary); }
+        .si-blue   { background: #eff6ff; color: #3b82f6; }
+        .si-purple { background: #faf5ff; color: #a855f7; }
+        .si-orange { background: #fff7ed; color: #f97316; }
+
+        /* ── Section Title ── */
+        .section-title {
+            font-size: 1.1rem; font-weight: 700;
+            color: #0f172a; letter-spacing: .3px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .section-title::after {
+            content: ''; flex: 1; height: 2px;
+            background: linear-gradient(90deg, var(--patient-primary), transparent);
+            border-radius: 2px;
+        }
+
+        /* ── Doctor cards ── */
+        .doc-card {
+            border: none; border-radius: var(--card-radius);
+            background: #fff; overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,.06);
+            transition: transform .25s, box-shadow .25s;
+        }
+        .doc-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(13,148,136,.15); }
+        .doc-img-wrap {
+            height: 150px; background: linear-gradient(135deg,#ccfbf1,#a7f3d0);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .doc-img-wrap img { width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 3px solid #fff; }
+        .doc-img-placeholder {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: var(--patient-primary); color: #fff;
+            font-size: 1.8rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .avail-badge { font-size: .68rem; padding: 3px 10px; border-radius: 20px; }
+        .avail-yes { background:#dcfce7; color:#16a34a; }
+        .avail-no  { background:#fef2f2; color:#dc2626; }
+
+        /* ── Specialty grid ── */
+        .spec-card {
+            border-radius: 14px; padding: 1.2rem;
+            background: #fff; border: 1px solid #e2e8f0;
+            text-align: center; cursor: pointer;
+            transition: all .2s;
+        }
+        .spec-card:hover { border-color: var(--patient-primary); box-shadow: 0 4px 15px rgba(13,148,136,.12); transform: translateY(-2px); }
+        .spec-icon { font-size: 2rem; margin-bottom: 6px; }
+
+        /* ── Quick Actions ── */
+        .qa-btn {
+            border-radius: 14px; padding: 1rem 1.2rem;
+            font-weight: 600; font-size: .9rem;
+            display: flex; align-items: center; gap: 10px;
+            transition: all .2s; text-decoration: none;
+        }
+        .qa-btn-teal { background: var(--patient-light); color: var(--patient-dark); border: 1px solid #99f6e4; }
+        .qa-btn-teal:hover { background: var(--patient-primary); color: #fff; }
+
+        /* ── Info Banner ── */
+        .info-banner {
+            background: linear-gradient(135deg,#f0fdfa,#e0f2fe);
+            border: 1px solid #a7f3d0; border-radius: 14px;
+        }
+
+        /* ── Appointment placeholder ── */
+        .appt-empty { background: #f8fffe; border: 2px dashed #99f6e4; border-radius: 16px; }
+    </style>
+</head>
+<body>
+
+<%- include('../partials/navbar') %>
+<%- include('../partials/flash') %>
+
+<!-- ── HERO ─────────────────────────────────────────── -->
+<div class="patient-hero">
+    <div class="container">
+        <div class="d-flex align-items-center gap-4 flex-wrap">
+            <div class="hero-avatar position-relative">
+                <%= currentUser.name.charAt(0).toUpperCase() %>
+            </div>
+            <div>
+                <div class="mb-1"><span class="hero-badge"><i class="fas fa-user-injured me-1"></i>Patient Portal</span></div>
+                <h1 class="fw-bold mb-1 fs-3">Good day, <%= currentUser.name %>!</h1>
+                <p class="mb-0 opacity-75 fs-6">Welcome to your personal health dashboard at Multisensa Rehabilitation Center.</p>
+            </div>
+        </div>
+        <!-- Hero Quick Buttons -->
+        <div class="mt-4 d-flex flex-wrap gap-2">
+            <a href="/doctors" class="btn btn-light btn-sm fw-semibold px-4 rounded-pill">
+                <i class="fas fa-search me-1"></i> Find a Specialist
+            </a>
+            <a href="/profile" class="btn btn-outline-light btn-sm px-4 rounded-pill">
+                <i class="fas fa-id-card me-1"></i> My Profile
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- ── STATS ─────────────────────────────────────────── -->
+<div class="container mt-n3 pb-4" style="position:relative; z-index:10;">
+    <div class="row g-3">
+        <div class="col-6 col-md-3">
+            <div class="stat-card p-3 d-flex align-items-center gap-3">
+                <div class="stat-icon si-teal"><i class="fas fa-user-md"></i></div>
+                <div>
+                    <div class="fw-bold fs-5 lh-1"><%= totalDoctors %></div>
+                    <div class="text-muted" style="font-size:.75rem;">Specialists</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card p-3 d-flex align-items-center gap-3">
+                <div class="stat-icon si-blue"><i class="fas fa-stethoscope"></i></div>
+                <div>
+                    <div class="fw-bold fs-5 lh-1"><%= categoryCount.length %></div>
+                    <div class="text-muted" style="font-size:.75rem;">Specialties</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card p-3 d-flex align-items-center gap-3">
+                <div class="stat-icon si-purple"><i class="fas fa-calendar-check"></i></div>
+                <div>
+                    <div class="fw-bold fs-5 lh-1">0</div>
+                    <div class="text-muted" style="font-size:.75rem;">Appointments</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card p-3 d-flex align-items-center gap-3">
+                <div class="stat-icon si-orange"><i class="fas fa-heartbeat"></i></div>
+                <div>
+                    <div class="fw-bold fs-5 lh-1">Active</div>
+                    <div class="text-muted" style="font-size:.75rem;">Health Status</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── MAIN CONTENT ──────────────────────────────────── -->
+<div class="container pb-5">
+    <div class="row g-4">
+
+        <!-- ── LEFT COLUMN ── -->
+        <div class="col-lg-8">
+
+            <!-- Upcoming Appointments -->
+            <div class="mb-4">
+                <p class="section-title mb-3"><i class="fas fa-calendar-alt text-teal"></i> Upcoming Appointments</p>
+                <div class="appt-empty text-center py-5 px-4">
+                    <div style="font-size:3rem; opacity:.35;"><i class="fas fa-calendar-plus"></i></div>
+                    <h6 class="fw-semibold text-muted mt-3 mb-1">No Appointments Yet</h6>
+                    <p class="text-muted small mb-3">Browse our specialists and schedule your first consultation.</p>
+                    <a href="/doctors" class="btn btn-sm px-4 rounded-pill fw-semibold text-white" style="background:var(--patient-primary);">
+                        <i class="fas fa-search me-1"></i> Browse Doctors
+                    </a>
+                </div>
+            </div>
+
+            <!-- Available Doctors -->
+            <div class="mb-4">
+                <p class="section-title mb-3"><i class="fas fa-user-md text-teal"></i> Available Specialists</p>
+                <% if (topDoctors && topDoctors.length > 0) { %>
+                <div class="row g-3">
+                    <% topDoctors.forEach(doc => { %>
+                    <div class="col-sm-6 col-md-4">
+                        <div class="doc-card">
+                            <div class="doc-img-wrap">
+                                <% if (doc.image) { %>
+                                <img src="/uploads/doctors/<%= doc.image %>" alt="<%= doc.name %>" />
+                                <% } else { %>
+                                <div class="doc-img-placeholder"><%= doc.name.charAt(0) %></div>
+                                <% } %>
+                            </div>
+                            <div class="p-3">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="fw-bold mb-0 fs-6"><%= doc.name %></h6>
+                                        <small class="text-muted"><%= doc.category %></small>
+                                    </div>
+                                    <span class="avail-badge <%= doc.availability === 'Available' ? 'avail-yes' : 'avail-no' %>">
+                                        <%= doc.availability === 'Available' ? '● Available' : '● Busy' %>
+                                    </span>
+                                </div>
+                                <div class="mt-2 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <% for (let i = 1; i <= 5; i++) { %>
+                                            <i class="fas fa-star" style="font-size:.65rem;color:<%= i <= Math.round(doc.rating) ? '#f59e0b' : '#d1d5db' %>;"></i>
+                                        <% } %>
+                                        <span class="text-muted ms-1" style="font-size:.72rem;"><%= doc.rating.toFixed(1) %></span>
+                                    </div>
+                                    <span class="fw-semibold" style="font-size:.8rem;color:var(--patient-primary);">PKR <%= doc.charges.toLocaleString() %></span>
+                                </div>
+                                <a href="/doctors/<%= doc._id %>" class="btn btn-sm w-100 mt-3 rounded-pill fw-semibold text-white" style="background:var(--patient-primary); font-size:.8rem;">
+                                    View Profile
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="/doctors" class="btn btn-outline-teal btn-sm px-4 rounded-pill fw-semibold" style="border-color:var(--patient-primary);color:var(--patient-primary);">
+                        View All Specialists <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+                <% } else { %>
+                <p class="text-muted small">No available doctors at the moment.</p>
+                <% } %>
+            </div>
+
+            <!-- Specialties Grid -->
+            <div>
+                <p class="section-title mb-3"><i class="fas fa-th-large text-teal"></i> Browse by Specialty</p>
+                <div class="row g-2">
+                    <% const icons = {'Physiotherapy':'🦴','Occupational Therapy':'🤲','Speech Therapy':'🗣️','Neurological Rehab':'🧠','Pediatric Rehab':'👶','Cardiopulmonary Rehab':'❤️','Sports Rehab':'🏃'}; %>
+                    <% categoryCount.forEach(cat => { %>
+                    <div class="col-6 col-sm-4 col-md-3">
+                        <a href="/doctors?category=<%= encodeURIComponent(cat._id) %>" class="spec-card d-block text-decoration-none">
+                            <div class="spec-icon"><%= icons[cat._id] || '🏥' %></div>
+                            <div class="fw-semibold text-dark" style="font-size:.82rem;"><%= cat._id %></div>
+                            <div class="text-muted" style="font-size:.72rem;"><%= cat.count %> specialist<%= cat.count !== 1 ? 's' : '' %></div>
+                        </a>
+                    </div>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── RIGHT SIDEBAR ── -->
+        <div class="col-lg-4">
+
+            <!-- Profile Card -->
+            <div class="stat-card p-4 mb-4 text-center">
+                <div class="hero-avatar mx-auto mb-3" style="width:70px;height:70px;font-size:1.6rem;background:linear-gradient(135deg,var(--patient-primary),var(--patient-accent));">
+                    <%= currentUser.name.charAt(0).toUpperCase() %>
+                </div>
+                <h6 class="fw-bold mb-0"><%= currentUser.name %></h6>
+                <p class="text-muted small mb-2"><%= currentUser.email %></p>
+                <span class="badge px-3 py-1 rounded-pill" style="background:#f0fdfa;color:var(--patient-dark);font-size:.72rem;">
+                    <i class="fas fa-user-injured me-1"></i>Patient
+                </span>
+                <hr class="my-3">
+                <a href="/profile" class="btn btn-sm w-100 rounded-pill fw-semibold" style="background:var(--patient-light);color:var(--patient-dark);border:1px solid #99f6e4;">
+                    <i class="fas fa-edit me-1"></i> View Full Profile
+                </a>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="stat-card p-4 mb-4">
+                <p class="section-title mb-3 fs-6"><i class="fas fa-bolt text-teal"></i> Quick Actions</p>
+                <div class="d-flex flex-column gap-2">
+                    <a href="/doctors" class="qa-btn qa-btn-teal">
+                        <i class="fas fa-search"></i> Find Specialists
+                    </a>
+                    <a href="/doctors?sort=rating" class="qa-btn qa-btn-teal">
+                        <i class="fas fa-star"></i> Top Rated Doctors
+                    </a>
+                    <a href="/doctors?availability=Available" class="qa-btn qa-btn-teal">
+                        <i class="fas fa-calendar-check"></i> Available Now
+                    </a>
+                    <a href="/profile" class="qa-btn qa-btn-teal">
+                        <i class="fas fa-id-card"></i> My Profile
+                    </a>
+                </div>
+            </div>
+
+            <!-- Health Tips -->
+            <div class="info-banner p-4">
+                <p class="fw-bold mb-3 text-dark" style="font-size:.9rem;"><i class="fas fa-lightbulb me-1" style="color:var(--patient-primary);"></i> Health Tips</p>
+                <ul class="list-unstyled mb-0" style="font-size:.82rem;color:#374151;">
+                    <li class="d-flex gap-2 mb-2"><i class="fas fa-check-circle mt-1 flex-shrink-0" style="color:#10b981;font-size:.75rem;"></i><span>Book consultations early to get your preferred time slot.</span></li>
+                    <li class="d-flex gap-2 mb-2"><i class="fas fa-check-circle mt-1 flex-shrink-0" style="color:#10b981;font-size:.75rem;"></i><span>Prepare your medical history before your first visit.</span></li>
+                    <li class="d-flex gap-2 mb-2"><i class="fas fa-check-circle mt-1 flex-shrink-0" style="color:#10b981;font-size:.75rem;"></i><span>Follow your doctor's prescribed therapy schedule consistently.</span></li>
+                    <li class="d-flex gap-2"><i class="fas fa-check-circle mt-1 flex-shrink-0" style="color:#10b981;font-size:.75rem;"></i><span>Stay hydrated and maintain a balanced diet for faster recovery.</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── FOOTER ─────────────────────────────────────────── -->
+<footer class="text-center py-4" style="background:#fff; border-top:1px solid #e2e8f0;">
+    <p class="mb-0 text-muted small">&copy; <%= new Date().getFullYear() %> Multisensa Rehabilitation Center. All rights reserved.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/script.js"></script>
+</body>
+</html>
