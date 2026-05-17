@@ -25,11 +25,14 @@ const userSchema = new mongoose.Schema(
             required : [true, 'Password is required'],
             minlength: [6, 'Password must be at least 6 characters'],
         },
-        // RBAC: 'customer' (patient), 'doctor', or 'admin'
+        // RBAC roles
+        // 'customer'/'patient' — end-users (session app uses 'customer', JWT API uses 'patient')
+        // 'doctor'             — registered doctors (session app)
+        // 'admin'              — administrators (both apps)
         role: {
             type   : String,
-            enum   : ['customer', 'doctor', 'admin'],
-            default: 'customer',
+            enum   : ['customer', 'patient', 'doctor', 'admin'],
+            default: 'patient',
         },
         // For doctors: link to their Doctor profile
         doctorProfile: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', default: null },

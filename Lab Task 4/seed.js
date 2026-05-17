@@ -1,11 +1,15 @@
 // seed.js
-// Run this file ONCE to populate the database with sample doctor records
-// Command: npm run seed   OR   node seed.js
+// Populates the database with sample data for BOTH:
+//   - server.js  (session-based web app, port 3001)
+//   - app.js     (JWT REST API, port 4000)
+//
+// Run: npm run seed   OR   node seed.js
 
-require('dotenv').config(); // Load environment variables from .env
-const mongoose = require('mongoose');
-const Doctor = require('./models/Doctor');
-const User   = require('./models/User');
+require('dotenv').config();
+const mongoose    = require('mongoose');
+const Doctor      = require('./models/Doctor');
+const User        = require('./models/User');
+const Appointment = require('./models/Appointment');
 
 // ============================================================
 // SAMPLE DOCTOR DATA — 30 realistic Pakistani doctors
@@ -368,9 +372,9 @@ const seedDatabase = async () => {
 
         // Step 2: Delete all existing records
         await User.deleteMany({});
-        console.log('🗑️  Cleared existing user records');
         await Doctor.deleteMany({});
-        console.log('🗑️  Cleared existing doctor records');
+        await Appointment.deleteMany({});
+        console.log('🗑️  Cleared existing Users, Doctors, and Appointments');
 
         // Step 3: Create demo users (passwords hashed by pre-save hook)
         const adminUser = await User.create({
@@ -379,10 +383,18 @@ const seedDatabase = async () => {
             password: 'Admin@123',
             role    : 'admin',
         });
+        // 'patient' role — used by the JWT API (app.js / port 4000)
         const patientUser = await User.create({
             name    : 'Ahmed Khan',
             email   : 'patient@multisensa.com',
             password: 'Patient@123',
+            role    : 'patient',
+        });
+        // 'customer' role — used by the session-based app (server.js / port 3001)
+        const customerUser = await User.create({
+            name    : 'Sara Ali',
+            email   : 'customer@multisensa.com',
+            password: 'Customer@123',
             role    : 'customer',
         });
         const doctorUser = await User.create({
@@ -391,18 +403,41 @@ const seedDatabase = async () => {
             password: 'Doctor@123',
             role    : 'doctor',
         });
-        console.log(`👤 Created admin  : ${adminUser.email}`);
-        console.log(`👤 Created patient: ${patientUser.email}`);
-        console.log(`👤 Created doctor : ${doctorUser.email}`);
+        console.log(`👤 Created admin   : ${adminUser.email}`);
+        console.log(`👤 Created patient : ${patientUser.email}`);
+        console.log(`👤 Created customer: ${customerUser.email}`);
+        console.log(`👤 Created doctor  : ${doctorUser.email}`);
 
         // Step 4: Insert all sample doctors at once
         const inserted = await Doctor.insertMany(doctors);
-        console.log(`🌱 Successfully seeded ${inserted.length} doctor records`);
+        console.log(`🌱 Seeded ${inserted.length} doctors`);
 
-        // Step 5: Disconnect cleanly
+        // Step 5: Create a sample appointment (JWT API demo)
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        await Appointment.create({
+            user           : patientUser._id,
+            doctor         : inserted[0]._id,
+            appointmentDate: tomorrow,
+            symptoms       : 'Lower back pain after a fall, difficulty walking.',
+            status         : 'confirmed',
+            notes          : 'Patient advised to bring previous X-ray reports.',
+        });
+        console.log(`📅 Created sample appointment: ${patientUser.name} → ${inserted[0].name}`);
+
+        // Step 6: Disconnect cleanly
         await mongoose.disconnect();
-        console.log('🔌 Database connection closed');
-        console.log('\n✨ Seeding complete! Run: npm start');
+        console.log('\n════════════════════════════════════════════');
+        console.log('  ✅  Seeding complete!');
+        console.log('════════════════════════════════════════════');
+        console.log('  Demo Credentials');
+        console.log('  Admin   : admin@multisensa.com    / Admin@123');
+        console.log('  Patient : patient@multisensa.com  / Patient@123  (JWT API)');
+        console.log('  Customer: customer@multisensa.com / Customer@123 (Web App)');
+        console.log('  Doctor  : doctor@multisensa.com   / Doctor@123');
+        console.log('════════════════════════════════════════════');
+        console.log('  JWT API  → node app.js    (port 4000)');
+        console.log('  Web App  → node server.js (port 3001)\n');
 
         process.exit(0);
     } catch (error) {
