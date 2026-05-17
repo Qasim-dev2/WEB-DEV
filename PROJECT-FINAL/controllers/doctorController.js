@@ -51,7 +51,7 @@ exports.getDoctorDetail = async (req, res) => {
         if (!doctor) { req.flash('error', 'Doctor not found.'); return res.redirect('/doctors'); }
 
         const related = await Doctor.find({ category: doctor.category, _id: { $ne: doctor._id } }).limit(3);
-        res.render('doctor-detail', { doctor, related });
+        res.render('doctor-detail', { doctor, relatedDoctors: related });
     } catch (err) {
         req.flash('error', 'Could not load doctor profile.');
         res.redirect('/doctors');

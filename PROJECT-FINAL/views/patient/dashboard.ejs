@@ -233,7 +233,7 @@
                         <div class="doc-card">
                             <div class="doc-img-wrap">
                                 <% if (doc.image) { %>
-                                <img src="/uploads/doctors/<%= doc.image %>" alt="<%= doc.name %>" />
+                                <img src="<%= doc.image.startsWith('http') ? doc.image : '/uploads/doctors/' + doc.image %>" alt="<%= doc.name %>" onerror="this.src='https://ui-avatars.com/api/?name=<%= encodeURIComponent(doc.name) %>&background=0d9488&color=fff&size=100&bold=true&rounded=true'" />
                                 <% } else { %>
                                 <div class="doc-img-placeholder"><%= doc.name.charAt(0) %></div>
                                 <% } %>
