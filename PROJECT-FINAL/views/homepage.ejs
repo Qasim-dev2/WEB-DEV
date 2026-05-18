@@ -1,185 +1,522 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multisensa Physiotherapy</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multisensa Rehabilitation Center — Expert Rehabilitation Care</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+        :root {
+            --teal: #0d9488;
+            --teal-dark: #0f766e;
+            --teal-light: #f0fdfa;
+            --teal-mid: #14b8a6;
+        }
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #fff; color: #0f172a; }
+
+        /* ─── HERO ─── */
+        .hero-section {
+            background: linear-gradient(135deg, #0f766e 0%, #0d9488 45%, #14b8a6 80%, #6ee7b7 100%);
+            min-height: 88vh;
+            display: flex; align-items: center;
+            position: relative; overflow: hidden;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.04' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35);
+            color: #fff; border-radius: 30px; padding: 6px 16px; font-size: .82rem;
+            font-weight: 500; backdrop-filter: blur(6px); margin-bottom: 1.2rem;
+        }
+        .hero-section h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 800; color: #fff; line-height: 1.15; }
+        .hero-section p.lead { color: rgba(255,255,255,.85); font-size: 1.1rem; max-width: 520px; }
+        .hero-img-card {
+            background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+            border-radius: 24px; padding: 2rem; text-align: center;
+            backdrop-filter: blur(8px);
+        }
+        .hero-stat { border-right: 1px solid rgba(255,255,255,.25); }
+        .hero-stat:last-child { border-right: none; }
+
+        /* ─── STATS BAND ─── */
+        .stats-band { background: var(--teal-dark); padding: 2rem 0; }
+        .stats-band .stat-num { font-size: 2rem; font-weight: 800; color: #fff; }
+        .stats-band .stat-label { font-size: .82rem; color: rgba(255,255,255,.7); text-transform: uppercase; letter-spacing: .8px; }
+
+        /* ─── SECTION HEADERS ─── */
+        .sec-tag { display: inline-block; background: var(--teal-light); color: var(--teal-dark);
+            font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            padding: 4px 14px; border-radius: 30px; margin-bottom: .6rem; }
+        .sec-title { font-size: 2rem; font-weight: 800; color: #0f172a; }
+        .sec-sub { color: #64748b; max-width: 560px; margin: auto; }
+
+        /* ─── SERVICES ─── */
+        .service-card {
+            border: 1.5px solid #e2e8f0; border-radius: 18px;
+            padding: 2rem 1.5rem; text-align: center; background: #fff;
+            transition: all .25s; cursor: default;
+        }
+        .service-card:hover { border-color: var(--teal); box-shadow: 0 12px 32px rgba(13,148,136,.12); transform: translateY(-4px); }
+        .svc-icon { width: 64px; height: 64px; border-radius: 18px; background: var(--teal-light);
+            display: flex; align-items: center; justify-content: center; font-size: 1.7rem;
+            margin: 0 auto 1rem; color: var(--teal); transition: all .25s; }
+        .service-card:hover .svc-icon { background: var(--teal); color: #fff; }
+
+        /* ─── DOCTORS ─── */
+        .doc-card { border: none; border-radius: 18px; overflow: hidden;
+            box-shadow: 0 3px 16px rgba(0,0,0,.07); transition: all .25s; }
+        .doc-card:hover { transform: translateY(-6px); box-shadow: 0 14px 36px rgba(13,148,136,.14); }
+        .doc-img-wrap { height: 180px; background: linear-gradient(135deg,#ccfbf1,#a7f3d0);
+            display: flex; align-items: center; justify-content: center; }
+        .doc-img-wrap img { width: 110px; height: 110px; object-fit: cover; border-radius: 50%; border: 3px solid #fff; }
+        .doc-placeholder { width: 90px; height: 90px; border-radius: 50%; background: var(--teal); color: #fff;
+            font-size: 2rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+        /* ─── HOW IT WORKS ─── */
+        .step-circle { width: 60px; height: 60px; border-radius: 50%; background: var(--teal); color: #fff;
+            font-size: 1.3rem; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
+
+        /* ─── WHY US ─── */
+        .why-card { border-radius: 18px; padding: 1.8rem; background: #fff;
+            border: 1px solid #e2e8f0; transition: all .2s; }
+        .why-card:hover { border-color: var(--teal); box-shadow: 0 6px 24px rgba(13,148,136,.10); }
+        .why-icon { font-size: 2rem; color: var(--teal); margin-bottom: .8rem; }
+
+        /* ─── TESTIMONIALS ─── */
+        .testi-card { background: #fff; border-radius: 18px; border: 1px solid #e2e8f0; padding: 1.8rem; }
+        .testi-avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; }
+        .star-row { color: #f59e0b; font-size: .8rem; }
+
+        /* ─── CTA BAND ─── */
+        .cta-band { background: linear-gradient(135deg, var(--teal-dark), var(--teal-mid)); }
+
+        /* ─── FOOTER ─── */
+        .site-footer { background: #0f172a; color: #94a3b8; padding: 3.5rem 0 1.5rem; }
+        .site-footer h6 { color: #fff; font-weight: 700; margin-bottom: 1rem; font-size: .9rem; text-transform: uppercase; letter-spacing: .5px; }
+        .site-footer a { color: #94a3b8; text-decoration: none; font-size: .88rem; line-height: 1.9; }
+        .site-footer a:hover { color: #5eead4; }
+        .footer-social a { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,.08);
+            display: inline-flex; align-items: center; justify-content: center; color: #cbd5e1;
+            font-size: .9rem; margin-right: 6px; transition: all .2s; }
+        .footer-social a:hover { background: var(--teal); color: #fff; }
+        .footer-divider { border-color: rgba(255,255,255,.08); }
+    </style>
 </head>
 <body>
-  <%- include('partials/navbar') %>
-  <div class="container pt-3"><%- include('partials/flash') %></div>
 
-    <header class="header" style="display:none">
-        <div class="container">
-            <a href="#home" class="logo">
-                <img src="https://i.ibb.co/MDWHnpT5/Multi-Sensa-Logo.jpg" alt="Multisensa Logo">
-            </a>
-            <nav class="nav-menu" id="nav-menu">
-                <a href="#home" class="nav-link">Home</a>
-                <a href="#services" class="nav-link">Services</a>
-                <a href="/doctors" class="nav-link">Our Specialists</a>
-                <a href="#about" class="nav-link">About</a>
-                <a href="#contact" class="nav-link">Contact</a>
-            </nav>
-            <button class="menu-btn" id="menu-btn">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-    </header>
+<%- include('partials/navbar') %>
+<div class="container"><%-  include('partials/flash') %></div>
 
-    <section class="hero" id="home">
-        <div class="container">
-            <div class="hero-content">
-                <h1>Pain Free Life Starts Here</h1>
-                <p>Expert physiotherapy treatment for back pain, neck pain, sports injuries, and more. We help you recover faster and live pain-free.</p>
-                <div class="hero-buttons">
+<!-- ══════════ HERO ══════════ -->
+<section class="hero-section" id="home">
+    <div class="container position-relative" style="z-index:2">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="hero-badge"><i class="fas fa-shield-alt"></i> Trusted Rehabilitation Since 2014</div>
+                <h1 class="mb-3">Expert Rehabilitation <span style="color:#a7f3d0">Care</span> You Can Trust</h1>
+                <p class="lead mb-4">Multisensa Rehabilitation Center provides world-class physiotherapy, speech therapy, occupational therapy, and neurological rehabilitation in Lahore.</p>
+                <div class="d-flex flex-wrap gap-3">
                     <% if (currentUser) { %>
-                    <a href="/doctors" class="btn btn-primary">Book Appointment</a>
-                    <a href="/profile" class="btn btn-whatsapp"><i class="fa-solid fa-circle-user"></i> My Profile</a>
+                    <a href="/appointments/book" class="btn btn-light fw-semibold px-5 py-2 rounded-pill" style="color:var(--teal-dark)">
+                        <i class="fas fa-calendar-plus me-2"></i>Book Appointment
+                    </a>
+                    <a href="/patient/dashboard" class="btn btn-outline-light fw-semibold px-5 py-2 rounded-pill">
+                        <i class="fas fa-th-large me-2"></i>My Dashboard
+                    </a>
                     <% } else { %>
-                    <a href="/register" class="btn btn-primary">Register Now</a>
-                    <a href="/doctors" class="btn btn-whatsapp"><i class="fa-solid fa-user-doctor"></i> View Specialists</a>
+                    <a href="/register" class="btn btn-light fw-semibold px-5 py-2 rounded-pill" style="color:var(--teal-dark)">
+                        <i class="fas fa-user-plus me-2"></i>Get Started Free
+                    </a>
+                    <a href="/doctors" class="btn btn-outline-light fw-semibold px-5 py-2 rounded-pill">
+                        <i class="fas fa-user-md me-2"></i>View Specialists
+                    </a>
                     <% } %>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="services" id="services">
-        <div class="container">
-            <div class="section-header">
-                <span class="tag">Our Services</span>
-                <h2>What We Offer</h2>
-                <p>Comprehensive therapy solutions for your health needs</p>
-            </div>
-            <div class="services-grid">
-                <div class="service-card">
-                    <div class="service-icon"><i class="fas fa-walking"></i></div>
-                    <h3>Physical Therapy</h3>
-                    <p>Treatment for pain, injuries, and movement problems to restore your mobility.</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon"><i class="fas fa-hands-helping"></i></div>
-                    <h3>Occupational Therapy</h3>
-                    <p>Helping you regain independence in daily activities and improve life quality.</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon"><i class="fas fa-comments"></i></div>
-                    <h3>Speech Therapy</h3>
-                    <p>Specialized treatment for speech and communication disorders.</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon"><i class="fas fa-brain"></i></div>
-                    <h3>Behavioural Therapy</h3>
-                    <p>Evidence-based help for autism, ADHD, and developmental disorders.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="about" id="about">
-        <div class="container">
-            <div class="section-header">
-                <span class="tag">Why Choose Us</span>
-                <h2>What Makes Us Different</h2>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <i class="fas fa-user-md"></i>
-                    <h3>10+ Years Experience</h3>
-                    <p>Experienced physiotherapists with proven results.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-clipboard-list"></i>
-                    <h3>Personal Treatment</h3>
-                    <p>Plans customized for your specific needs.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-microscope"></i>
-                    <h3>Modern Techniques</h3>
-                    <p>Latest equipment and treatment methods.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-clock"></i>
-                    <h3>Flexible Timing</h3>
-                    <p>Mon - Sat: 3:00 PM - 7:00 PM</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="contact" id="contact">
-        <div class="container">
-            <div class="section-header">
-                <span class="tag">Get In Touch</span>
-                <h2>Book Your Appointment</h2>
-            </div>
-            <div class="contact-wrapper">
-                <form class="contact-form" id="contact-form">
-                    <div class="form-group">
-                        <label for="name">Your Name</label>
-                        <input type="text" id="name" name="name" placeholder="Enter your name" required>
+                <!-- Quick stats below hero CTAs -->
+                <div class="row g-3 mt-4">
+                    <div class="col-4 hero-stat pe-3">
+                        <div style="color:#fff;font-size:1.6rem;font-weight:800;">500+</div>
+                        <div style="color:rgba(255,255,255,.7);font-size:.78rem">Patients Treated</div>
                     </div>
-                    <div class="form-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+                    <div class="col-4 hero-stat pe-3">
+                        <div style="color:#fff;font-size:1.6rem;font-weight:800;">10+</div>
+                        <div style="color:rgba(255,255,255,.7);font-size:.78rem">Years Experience</div>
                     </div>
-                    <div class="form-group">
-                        <label for="message">Your Message</label>
-                        <textarea id="message" name="message" rows="4" placeholder="Tell us about your condition..."></textarea>
+                    <div class="col-4">
+                        <div style="color:#fff;font-size:1.6rem;font-weight:800;">7</div>
+                        <div style="color:rgba(255,255,255,.7);font-size:.78rem">Specializations</div>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-full">
-                        <i class="fas fa-paper-plane"></i> Send Message
-                    </button>
-                </form>
-                <div class="contact-info">
-                    <div class="info-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <div>
-                            <h4>Address</h4>
-                            <p>477 Nishtar Block, Allama Iqbal Town, Lahore</p>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="hero-img-card">
+                    <img src="https://i.ibb.co/MDWHnpT5/Multi-Sensa-Logo.jpg" alt="Multisensa Logo"
+                         style="max-width:220px;border-radius:16px;margin-bottom:1rem" onerror="this.style.display='none'">
+                    <div class="row g-3 text-white text-center mt-1">
+                        <div class="col-6">
+                            <div style="background:rgba(255,255,255,.12);border-radius:12px;padding:.8rem;">
+                                <i class="fas fa-heart-pulse fa-2x mb-1" style="color:#6ee7b7"></i>
+                                <div class="fw-semibold" style="font-size:.82rem">Physiotherapy</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div style="background:rgba(255,255,255,.12);border-radius:12px;padding:.8rem;">
+                                <i class="fas fa-brain fa-2x mb-1" style="color:#6ee7b7"></i>
+                                <div class="fw-semibold" style="font-size:.82rem">Neurological Rehab</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div style="background:rgba(255,255,255,.12);border-radius:12px;padding:.8rem;">
+                                <i class="fas fa-comments fa-2x mb-1" style="color:#6ee7b7"></i>
+                                <div class="fw-semibold" style="font-size:.82rem">Speech Therapy</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div style="background:rgba(255,255,255,.12);border-radius:12px;padding:.8rem;">
+                                <i class="fas fa-hand-holding-heart fa-2x mb-1" style="color:#6ee7b7"></i>
+                                <div class="fw-semibold" style="font-size:.82rem">Occupational Therapy</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="info-item">
-                        <i class="fas fa-phone"></i>
-                        <div>
-                            <h4>Phone</h4>
-                            <p>+92 314 736 7769</p>
-                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════ STATS BAND ══════════ -->
+<div class="stats-band">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-6 col-md-3">
+                <div class="stat-num">500+</div>
+                <div class="stat-label">Patients Treated</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-num">10+</div>
+                <div class="stat-label">Years of Service</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-num">7</div>
+                <div class="stat-label">Specializations</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-num">98%</div>
+                <div class="stat-label">Patient Satisfaction</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════ SERVICES ══════════ -->
+<section id="services" class="py-6" style="padding:5rem 0; background:#f8fffe">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="sec-tag">Our Services</span>
+            <h2 class="sec-title mt-1">Comprehensive Rehabilitation Services</h2>
+            <p class="sec-sub mt-2">We offer evidence-based rehabilitation treatments tailored to each patient's unique recovery journey.</p>
+        </div>
+        <div class="row g-4">
+            <% const services = [
+                { icon:'fas fa-walking', label:'Physiotherapy', desc:'Restore movement, reduce pain, and regain full physical function through targeted therapy plans.' },
+                { icon:'fas fa-hand-holding-heart', label:'Occupational Therapy', desc:'Regain independence in daily life activities with personalized occupational rehabilitation.' },
+                { icon:'fas fa-comments', label:'Speech Therapy', desc:'Specialized communication therapy for speech, language, and swallowing disorders.' },
+                { icon:'fas fa-brain', label:'Neurological Rehab', desc:'Recovery support for stroke, TBI, MS, and other neurological conditions.' },
+                { icon:'fas fa-child', label:'Pediatric Rehab', desc:'Child-focused therapy to support developmental milestones and improve quality of life.' },
+                { icon:'fas fa-running', label:'Sports Rehabilitation', desc:'Targeted recovery programs for athletes to return to peak performance safely.' }
+            ]; %>
+            <% services.forEach(s => { %>
+            <div class="col-sm-6 col-lg-4">
+                <div class="service-card h-100">
+                    <div class="svc-icon"><i class="<%= s.icon %>"></i></div>
+                    <h5 class="fw-700 mb-2" style="font-weight:700"><%= s.label %></h5>
+                    <p class="text-muted mb-0" style="font-size:.88rem"><%= s.desc %></p>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════ FEATURED SPECIALISTS ══════════ -->
+<% if (featuredDoctors && featuredDoctors.length > 0) { %>
+<section id="specialists" style="padding:5rem 0; background:#fff">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="sec-tag">Our Team</span>
+            <h2 class="sec-title mt-1">Meet Our Top Specialists</h2>
+            <p class="sec-sub mt-2">Highly qualified professionals dedicated to your recovery and well-being.</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <% featuredDoctors.forEach(doc => { %>
+            <div class="col-sm-6 col-lg-3">
+                <div class="doc-card h-100">
+                    <div class="doc-img-wrap">
+                        <% if (doc.image) { %>
+                        <img src="<%= doc.image.startsWith('http') ? doc.image : '/uploads/doctors/' + doc.image %>" alt="<%= doc.name %>"
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                        <div class="doc-placeholder" style="display:none"><%= doc.name.charAt(0) %></div>
+                        <% } else { %>
+                        <div class="doc-placeholder"><%= doc.name.charAt(0) %></div>
+                        <% } %>
                     </div>
-                    <div class="info-item">
-                        <i class="fas fa-clock"></i>
-                        <div>
-                            <h4>Working Hours</h4>
-                            <p>Mon - Sat: 3:00 PM - 7:00 PM</p>
+                    <div class="p-3">
+                        <h6 class="fw-bold mb-0"><%= doc.name %></h6>
+                        <div class="text-muted small mb-2"><%= doc.category %></div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <% for (let i = 1; i <= 5; i++) { %>
+                                <i class="fas fa-star" style="font-size:.65rem;color:<%= i<=Math.round(doc.rating)?'#f59e0b':'#d1d5db' %>"></i>
+                                <% } %>
+                                <span class="text-muted ms-1" style="font-size:.72rem"><%= doc.rating.toFixed(1) %></span>
+                            </div>
+                            <span style="font-size:.8rem;color:var(--teal);font-weight:600">PKR <%= doc.charges.toLocaleString() %></span>
                         </div>
-                    </div>
-                    <div class="social-links">
-                        <a href="https://wa.me/923147367769" target="_blank" rel="noopener noreferrer" title="WhatsApp">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                        <a href="https://www.facebook.com/share/1CVTMsboQV/" target="_blank" rel="noopener noreferrer" title="Facebook">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="https://www.instagram.com/multisensa_centre" target="_blank" rel="noopener noreferrer" title="Instagram">
-                            <i class="fab fa-instagram"></i>
+                        <a href="/appointments/book?doctor=<%= doc._id %>" class="btn btn-sm w-100 rounded-pill fw-semibold text-white" style="background:var(--teal);font-size:.82rem">
+                            <i class="fas fa-calendar-plus me-1"></i>Book Now
                         </a>
                     </div>
                 </div>
             </div>
+            <% }) %>
         </div>
-    </section>
-
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 Multisensa Physiotherapy. All rights reserved.</p>
+        <div class="text-center mt-4">
+            <a href="/doctors" class="btn btn-outline-secondary px-5 rounded-pill fw-semibold" style="border-color:var(--teal);color:var(--teal)">
+                View All Specialists <i class="fas fa-arrow-right ms-2"></i>
+            </a>
         </div>
-    </footer>
+    </div>
+</section>
+<% } %>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/script.js"></script>
+<!-- ══════════ HOW IT WORKS ══════════ -->
+<section style="padding:5rem 0;background:#f8fffe">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="sec-tag">Simple Process</span>
+            <h2 class="sec-title mt-1">How It Works</h2>
+            <p class="sec-sub mt-2">Book your appointment in just three easy steps.</p>
+        </div>
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="step-circle">1</div>
+                <h5 class="fw-bold mb-2">Create an Account</h5>
+                <p class="text-muted" style="font-size:.9rem">Sign up for free and create your patient profile. It only takes a minute.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="step-circle">2</div>
+                <h5 class="fw-bold mb-2">Choose a Specialist</h5>
+                <p class="text-muted" style="font-size:.9rem">Browse our team of qualified specialists and select one that matches your needs.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="step-circle">3</div>
+                <h5 class="fw-bold mb-2">Book & Confirm</h5>
+                <p class="text-muted" style="font-size:.9rem">Fill in the appointment form. Our admin will confirm your slot within 24 hours.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════ WHY CHOOSE US ══════════ -->
+<section id="about" style="padding:5rem 0;background:#fff">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="sec-tag">Why Us</span>
+            <h2 class="sec-title mt-1">Why Choose Multisensa?</h2>
+        </div>
+        <div class="row g-4">
+            <% const whys = [
+                {icon:'fas fa-award',title:'Certified Experts',desc:'All our therapists hold internationally recognized certifications and undergo continuous training.'},
+                {icon:'fas fa-clipboard-list',title:'Personalized Plans',desc:'Every patient receives a custom treatment plan based on individual assessment and goals.'},
+                {icon:'fas fa-microscope',title:'Advanced Equipment',desc:'We use the latest rehabilitation technology and evidence-based therapeutic techniques.'},
+                {icon:'fas fa-clock',title:'Flexible Scheduling',desc:'Monday to Saturday, with evening slots available to fit your busy lifestyle.'}
+            ]; %>
+            <% whys.forEach(w => { %>
+            <div class="col-sm-6 col-lg-3">
+                <div class="why-card h-100">
+                    <div class="why-icon"><i class="<%= w.icon %>"></i></div>
+                    <h6 class="fw-bold mb-2"><%= w.title %></h6>
+                    <p class="text-muted mb-0" style="font-size:.86rem"><%= w.desc %></p>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════ TESTIMONIALS ══════════ -->
+<section style="padding:5rem 0;background:#f0fdfa">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="sec-tag">Testimonials</span>
+            <h2 class="sec-title mt-1">What Our Patients Say</h2>
+        </div>
+
+        <%
+        const allTestimonials = [
+            { initials:'A', name:'Ahmed Raza',      role:'Neurological Rehab Patient',      quote:'After my stroke, I thought I\'d never walk normally again. The neurological rehab team at Multisensa gave me my life back. Incredible staff and genuine care.' },
+            { initials:'S', name:'Sara Khan',        role:'Parent of Speech Therapy Patient', quote:'My son\'s speech improved dramatically after just 3 months of therapy here. The therapists are patient, professional, and truly talented. Highly recommended!' },
+            { initials:'U', name:'Usman Ali',        role:'Sports Rehab Patient',             quote:'Sports injury recovery has never felt so smooth. The physiotherapy team understood my athletic goals and helped me return to the field faster than expected.' },
+            { initials:'F', name:'Fatima Siddiqui',  role:'Physiotherapy Patient',            quote:'I had chronic back pain for years. After 6 weeks of treatment at Multisensa, I\'m living pain-free. The personalised care plan made all the difference.' },
+            { initials:'K', name:'Kamran Malik',     role:'Pediatric Rehab (Parent)',         quote:'The pediatric team worked wonders with my daughter. They made the sessions fun and engaging for her. We saw real progress every single week.' },
+            { initials:'R', name:'Rabia Noor',       role:'Occupational Therapy Patient',     quote:'After my accident I struggled with daily tasks. The occupational therapists at Multisensa helped me regain my independence step by step. Forever grateful.' }
+        ];
+        %>
+
+        <!-- Testimonial pages: 3 per page → 2 pages -->
+        <div id="testiWrapper">
+            <div class="row g-4" id="testiGrid">
+                <% allTestimonials.slice(0,3).forEach(t => { %>
+                <div class="col-md-4 testi-item">
+                    <div class="testi-card h-100">
+                        <div class="star-row mb-2">★★★★★</div>
+                        <p class="text-muted mb-3" style="font-size:.9rem">"<%= t.quote %>"</p>
+                        <div class="d-flex align-items-center gap-2">
+                            <div style="width:44px;height:44px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0"><%= t.initials %></div>
+                            <div><div class="fw-semibold" style="font-size:.88rem"><%= t.name %></div><div class="text-muted" style="font-size:.76rem"><%= t.role %></div></div>
+                        </div>
+                    </div>
+                </div>
+                <% }) %>
+            </div>
+        </div>
+
+        <!-- Pagination controls -->
+        <div class="d-flex justify-content-center align-items-center gap-2 mt-4" id="testiPagination">
+            <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" id="testiPrev" onclick="testiGo(-1)" style="border-color:var(--teal);color:var(--teal)">
+                <i class="fas fa-chevron-left me-1"></i> Prev
+            </button>
+            <button class="btn btn-sm rounded-pill px-3 testi-page-btn active" data-page="0" onclick="testiGoTo(0)" style="background:var(--teal);color:#fff;border:none">1</button>
+            <button class="btn btn-sm rounded-pill px-3 testi-page-btn" data-page="1" onclick="testiGoTo(1)" style="border:1px solid var(--teal);color:var(--teal);background:#fff">2</button>
+            <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" id="testiNext" onclick="testiGo(1)" style="border-color:var(--teal);color:var(--teal)">
+                Next <i class="fas fa-chevron-right ms-1"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+<script>
+(function() {
+    const testimonials = <%- JSON.stringify(allTestimonials) %>;
+    let currentPage = 0;
+    const perPage = 3;
+    const totalPages = Math.ceil(testimonials.length / perPage);
+
+    function renderPage(page) {
+        const grid = document.getElementById('testiGrid');
+        const slice = testimonials.slice(page * perPage, page * perPage + perPage);
+        grid.innerHTML = slice.map(t => `
+            <div class="col-md-4 testi-item">
+                <div class="testi-card h-100">
+                    <div class="star-row mb-2" style="color:#f59e0b;font-size:.8rem">★★★★★</div>
+                    <p class="text-muted mb-3" style="font-size:.9rem">"${t.quote}"</p>
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width:44px;height:44px;border-radius:50%;background:#0d9488;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0">${t.initials}</div>
+                        <div><div class="fw-semibold" style="font-size:.88rem">${t.name}</div><div class="text-muted" style="font-size:.76rem">${t.role}</div></div>
+                    </div>
+                </div>
+            </div>`).join('');
+        // update page buttons
+        document.querySelectorAll('.testi-page-btn').forEach(btn => {
+            const active = parseInt(btn.dataset.page) === page;
+            btn.style.background = active ? '#0d9488' : '#fff';
+            btn.style.color      = active ? '#fff'    : '#0d9488';
+            btn.style.border     = active ? 'none'    : '1px solid #0d9488';
+        });
+        document.getElementById('testiPrev').disabled = page === 0;
+        document.getElementById('testiNext').disabled = page === totalPages - 1;
+    }
+
+    window.testiGo   = function(dir)  { currentPage = Math.min(Math.max(currentPage + dir, 0), totalPages - 1); renderPage(currentPage); };
+    window.testiGoTo = function(page) { currentPage = page; renderPage(currentPage); };
+})();
+</script>
+
+<!-- ══════════ CTA BAND ══════════ -->
+<section class="cta-band text-white text-center py-5">
+    <div class="container">
+        <h2 class="fw-800 mb-2" style="font-weight:800">Ready to Start Your Recovery?</h2>
+        <p class="opacity-75 mb-4">Join hundreds of patients who've reclaimed their health at Multisensa Rehabilitation Center.</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <% if (currentUser) { %>
+            <a href="/appointments/book" class="btn btn-light fw-semibold px-5 rounded-pill" style="color:var(--teal-dark)">
+                <i class="fas fa-calendar-plus me-2"></i>Book Now
+            </a>
+            <% } else { %>
+            <a href="/register" class="btn btn-light fw-semibold px-5 rounded-pill" style="color:var(--teal-dark)">
+                <i class="fas fa-user-plus me-2"></i>Create Free Account
+            </a>
+            <a href="/login" class="btn btn-outline-light fw-semibold px-5 rounded-pill">
+                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+            </a>
+            <% } %>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer class="site-footer" id="contact">
+    <div class="container">
+        <div class="row g-5 mb-4">
+            <!-- Brand -->
+            <div class="col-md-4">
+                <h6 style="color:#5eead4;font-size:1.1rem;font-weight:800">Multisensa</h6>
+                <p style="font-size:.86rem;line-height:1.7">Multisensa Rehabilitation Center — providing expert rehabilitation care in Lahore since 2014.</p>
+                <div class="footer-social mt-3">
+                    <a href="https://wa.me/923147367769" target="_blank" rel="noopener noreferrer" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.facebook.com/share/1CVTMsboQV/" target="_blank" rel="noopener noreferrer" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/multisensa_centre" target="_blank" rel="noopener noreferrer" title="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <!-- Quick Links -->
+            <div class="col-6 col-md-2">
+                <h6>Quick Links</h6>
+                <div class="d-flex flex-column">
+                    <a href="/">Home</a>
+                    <a href="/doctors">Specialists</a>
+                    <a href="/appointments/book">Book Appointment</a>
+                    <a href="/login">Patient Login</a>
+                    <a href="/register">Register</a>
+                </div>
+            </div>
+            <!-- Services -->
+            <div class="col-6 col-md-2">
+                <h6>Services</h6>
+                <div class="d-flex flex-column">
+                    <a href="/doctors?category=Physiotherapy">Physiotherapy</a>
+                    <a href="/doctors?category=Speech+Therapy">Speech Therapy</a>
+                    <a href="/doctors?category=Occupational+Therapy">Occupational Therapy</a>
+                    <a href="/doctors?category=Neurological+Rehab">Neurological Rehab</a>
+                </div>
+            </div>
+            <!-- Contact Info -->
+            <div class="col-md-4">
+                <h6>Contact Us</h6>
+                <div class="d-flex flex-column gap-2" style="font-size:.86rem">
+                    <div><i class="fas fa-map-marker-alt me-2" style="color:#5eead4"></i>477 Nishtar Block, Allama Iqbal Town, Lahore</div>
+                    <div><i class="fas fa-phone me-2" style="color:#5eead4"></i>+92 314 736 7769</div>
+                    <div><i class="fas fa-clock me-2" style="color:#5eead4"></i>Mon – Sat: 3:00 PM – 7:00 PM</div>
+                    <div><i class="fas fa-envelope me-2" style="color:#5eead4"></i>info@multisensa.com</div>
+                </div>
+            </div>
+        </div>
+        <hr class="footer-divider" />
+        <div class="text-center" style="font-size:.82rem">
+            &copy; <%= new Date().getFullYear() %> Multisensa Rehabilitation Center. All rights reserved.
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/script.js"></script>
 </body>
 </html>

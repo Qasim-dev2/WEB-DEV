@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const navMenu = document.getElementById('nav-menu');
     
     // Add click event to menu button
-    menuBtn.addEventListener('click', function() {
+    if (menuBtn) menuBtn.addEventListener('click', function() {
         // Toggle 'active' class on nav menu
         // If active class exists, remove it; if not, add it
         navMenu.classList.toggle('active');
@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Listen for scroll events
     window.addEventListener('scroll', function() {
+        if (!header) return;
         // Check if page is scrolled more than 50 pixels
         if (window.scrollY > 50) {
             header.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
@@ -55,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const contactForm = document.getElementById('contact-form');
     
-    contactForm.addEventListener('submit', function(event) {
+    if (contactForm) contactForm.addEventListener('submit', function(event) {
         // Prevent the form from submitting normally
         event.preventDefault();
         

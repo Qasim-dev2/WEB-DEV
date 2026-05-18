@@ -39,14 +39,21 @@
             <span>Add Doctor</span>
         </a>
 
+        <a href="/admin/appointments"
+           class="sidebar-nav-item <%= activePage === 'appointments' ? 'active' : '' %>">
+            <i class="fas fa-calendar-check"></i>
+            <span>Appointments</span>
+            <%# pending badge removed — counts passed via view data if needed %>
+        </a>
+
         <span class="nav-section-label">Website</span>
 
-        <a href="/doctors" target="_blank" class="sidebar-nav-item">
+        <a href="/doctors" class="sidebar-nav-item">
             <i class="fas fa-users-medical"></i>
             <span>Specialists Page</span>
         </a>
 
-        <a href="/" target="_blank" class="sidebar-nav-item">
+        <a href="/" class="sidebar-nav-item">
             <i class="fas fa-home"></i>
             <span>Home Page</span>
         </a>

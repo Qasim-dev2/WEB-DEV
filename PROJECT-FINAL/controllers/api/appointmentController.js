@@ -31,7 +31,7 @@ exports.bookAppointment = async (req, res) => {
         }
 
         const appointment = await Appointment.create({
-            user           : req.user.user_id,
+            patient        : req.user.user_id,
             doctor,
             appointmentDate: date,
             symptoms,
@@ -40,8 +40,8 @@ exports.bookAppointment = async (req, res) => {
 
         // Populate references for response
         await appointment.populate([
-            { path: 'doctor', select: 'name category charges qualification' },
-            { path: 'user',   select: 'name email' },
+            { path: 'doctor',  select: 'name category charges qualification' },
+            { path: 'patient', select: 'name email' },
         ]);
 
         return res.status(201).json({
@@ -65,7 +65,7 @@ exports.bookAppointment = async (req, res) => {
 // Auth: patient — own appointments only
 exports.getMyAppointments = async (req, res) => {
     try {
-        const appointments = await Appointment.find({ user: req.user.user_id })
+        const appointments = await Appointment.find({ patient: req.user.user_id })
             .populate('doctor', 'name category charges rating image')
             .sort({ appointmentDate: -1 });
 
@@ -97,7 +97,7 @@ exports.getAllAppointments = async (req, res) => {
             Appointment.countDocuments(filter),
             Appointment.find(filter)
                 .populate('doctor', 'name category charges')
-                .populate('user',   'name email role')
+                .populate('patient', 'name email role')
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(LIMIT),
@@ -125,7 +125,7 @@ exports.getAllAppointments = async (req, res) => {
 exports.updateAppointmentStatus = async (req, res) => {
     try {
         const { status, notes } = req.body;
-        const VALID_STATUSES = ['pending', 'confirmed', 'completed', 'cancelled'];
+        const VALID_STATUSES = ['pending', 'approved', 'rejected', 'completed', 'cancelled'];
 
         if (!status || !VALID_STATUSES.includes(status)) {
             return res.status(400).json({
@@ -143,7 +143,7 @@ exports.updateAppointmentStatus = async (req, res) => {
             { new: true, runValidators: true }
         )
             .populate('doctor', 'name category charges')
-            .populate('user',   'name email');
+            .populate('patient', 'name email');
 
         if (!appointment) {
             return res.status(404).json({ success: false, message: 'Appointment not found.' });

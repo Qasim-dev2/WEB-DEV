@@ -3,9 +3,11 @@
 // Admin Panel CRUD Logic — Multisensa Rehabilitation Center
 // ─────────────────────────────────────────────────────────
 
-const Doctor = require('../models/Doctor');
-const fs     = require('fs');
-const path   = require('path');
+const Doctor      = require('../models/Doctor');
+const User        = require('../models/User');
+const Appointment = require('../models/Appointment');
+const fs          = require('fs');
+const path        = require('path');
 
 // All valid specialization categories
 const ALL_CATEGORIES = [
@@ -32,17 +34,21 @@ function deleteLocalImage(imagePath) {
 
 // ─────────────────────────────────────────────────────────
 // GET /admin
-// Dashboard: stats, recent doctors, category breakdown
+// Dashboard: stats for doctors AND appointments
 // ─────────────────────────────────────────────────────────
 exports.getDashboard = async (req, res) => {
     try {
-        // Run all queries in parallel for speed
         const [
             totalDoctors,
             recentDoctors,
             categoryStats,
             chargesAgg,
             ratingAgg,
+            totalAppointments,
+            pendingCount,
+            approvedCount,
+            completedCount,
+            recentAppointments,
         ] = await Promise.all([
             Doctor.countDocuments(),
             Doctor.find().sort({ createdAt: -1 }).limit(5),
@@ -52,6 +58,15 @@ exports.getDashboard = async (req, res) => {
             ]),
             Doctor.aggregate([{ $group: { _id: null, avg: { $avg: '$charges' } } }]),
             Doctor.aggregate([{ $group: { _id: null, avg: { $avg: '$rating'  } } }]),
+            Appointment.countDocuments(),
+            Appointment.countDocuments({ status: 'pending' }),
+            Appointment.countDocuments({ status: 'approved' }),
+            Appointment.countDocuments({ status: 'completed' }),
+            Appointment.find()
+                .sort({ createdAt: -1 })
+                .limit(5)
+                .populate('patient', 'name email')
+                .populate('doctor',  'name category'),
         ]);
 
         const avgCharges      = chargesAgg[0] ? Math.round(chargesAgg[0].avg) : 0;
@@ -65,6 +80,11 @@ exports.getDashboard = async (req, res) => {
             avgRating,
             recentDoctors,
             categoryStats,
+            totalAppointments,
+            pendingCount,
+            approvedCount,
+            completedCount,
+            recentAppointments,
         });
 
     } catch (err) {
@@ -134,6 +154,7 @@ exports.postAddDoctor = async (req, res) => {
     const {
         name, charges, category, rating,
         availability, experience, qualification, description,
+        loginEmail, loginPassword,
     } = req.body;
 
     // ── Server-side validation ─────────────────────────
@@ -147,7 +168,17 @@ exports.postAddDoctor = async (req, res) => {
     if (!qualification || !qualification.trim()) errors.push('Qualification is required.');
     if (!description   || !description.trim())   errors.push('Description is required.');
 
-    // If validation fails, remove uploaded file and re-render form
+    // Credentials validation (only if either field is filled)
+    const hasCredentials = (loginEmail && loginEmail.trim()) || (loginPassword && loginPassword.trim());
+    if (hasCredentials) {
+        if (!loginEmail || !loginEmail.trim())       errors.push('Login email is required when providing credentials.');
+        if (!loginPassword || loginPassword.length < 6) errors.push('Password must be at least 6 characters.');
+        if (loginEmail && loginEmail.trim()) {
+            const existing = await User.findOne({ email: loginEmail.trim().toLowerCase() });
+            if (existing) errors.push(`Email "${loginEmail.trim()}" is already registered.`);
+        }
+    }
+
     if (errors.length > 0) {
         if (req.file) fs.unlink(req.file.path, () => {});
         return res.render('admin/addDoctor', {
@@ -162,6 +193,18 @@ exports.postAddDoctor = async (req, res) => {
             ? `/uploads/doctors/${req.file.filename}`
             : '';
 
+        // Create login account only when credentials were provided
+        let linkedUserId = null;
+        if (hasCredentials) {
+            const newUser = await User.create({
+                name    : name.trim(),
+                email   : loginEmail.trim().toLowerCase(),
+                password: loginPassword,
+                role    : 'doctor',
+            });
+            linkedUserId = newUser._id;
+        }
+
         await Doctor.create({
             name         : name.trim(),
             charges      : Number(charges),
@@ -172,9 +215,13 @@ exports.postAddDoctor = async (req, res) => {
             qualification: qualification.trim(),
             description  : description.trim(),
             image        : imagePath,
+            user         : linkedUserId,
         });
 
-        req.flash('success', `Dr. ${name.trim()} has been added successfully!`);
+        const msg = linkedUserId
+            ? `${name.trim()} added with a login account (${loginEmail.trim()}).`
+            : `${name.trim()} added as a specialist profile (no login).`;
+        req.flash('success', msg);
         res.redirect('/admin/doctors');
 
     } catch (err) {
@@ -276,7 +323,7 @@ exports.putDoctor = async (req, res) => {
 
         await doctor.save();
 
-        req.flash('success', `Dr. ${doctor.name} has been updated successfully!`);
+        req.flash('success', `${doctor.name} has been updated successfully!`);
         res.redirect('/admin/doctors');
 
     } catch (err) {
@@ -308,5 +355,277 @@ exports.deleteDoctor = async (req, res) => {
         console.error('Delete doctor error:', err);
         req.flash('error', 'Failed to delete doctor. Please try again.');
         res.redirect('/admin/doctors');
+    }
+};
+
+// ─────────────────────────────────────────────────────────
+// POST /admin/doctors/:id/link
+// Link a user account (by email) to this doctor profile
+// ─────────────────────────────────────────────────────────
+exports.linkDoctorUser = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ email: email.trim().toLowerCase() });
+        if (!user) {
+            req.flash('error', 'No user account found with that email address.');
+            return res.redirect(`/admin/doctors/${req.params.id}/edit`);
+        }
+        // Set or upgrade role to doctor
+        user.role = 'doctor';
+        await user.save();
+
+        // Unlink any other doctor profile that was pointing to this user
+        await Doctor.updateMany({ user: user._id }, { $set: { user: null } });
+
+        // Link this doctor
+        await Doctor.findByIdAndUpdate(req.params.id, { user: user._id });
+        req.flash('success', `Account linked! ${user.name} can now log in as a doctor.`);
+        res.redirect(`/admin/doctors/${req.params.id}/edit`);
+    } catch (err) {
+        console.error('Link doctor user error:', err);
+        req.flash('error', 'Failed to link account. Please try again.');
+        res.redirect(`/admin/doctors/${req.params.id}/edit`);
+    }
+};
+
+// ─────────────────────────────────────────────────────────
+// POST /admin/doctors/:id/unlink
+// Remove user account link from this doctor profile
+// ─────────────────────────────────────────────────────────
+exports.unlinkDoctorUser = async (req, res) => {
+    try {
+        const doctor = await Doctor.findById(req.params.id).populate('user');
+        if (doctor && doctor.user) {
+            doctor.user.role = 'patient';
+            await doctor.user.save();
+            doctor.user = null;
+            await doctor.save();
+            req.flash('success', 'Doctor account unlinked successfully.');
+        }
+        res.redirect(`/admin/doctors/${req.params.id}/edit`);
+    } catch (err) {
+        console.error('Unlink doctor user error:', err);
+        req.flash('error', 'Failed to unlink account.');
+        res.redirect(`/admin/doctors/${req.params.id}/edit`);
+    }
+};
+
+// ═════════════════════════════════════════════════════════
+// APPOINTMENT MANAGEMENT
+// ═════════════════════════════════════════════════════════
+
+// Valid statuses the admin can set
+const APPOINTMENT_STATUSES = ['pending', 'approved', 'rejected', 'completed', 'cancelled'];
+
+// ─────────────────────────────────────────────────────────
+// GET /admin/appointments
+// List all appointments with search + status filter + pagination
+// ─────────────────────────────────────────────────────────
+exports.getAppointments = async (req, res) => {
+    try {
+        const { status = '', search = '', page = '1' } = req.query;
+
+        // Build filter
+        const filter = {};
+        if (status && APPOINTMENT_STATUSES.includes(status)) filter.status = status;
+
+        // Pagination
+        const LIMIT       = 15;
+        const currentPage = Math.max(1, parseInt(page) || 1);
+        const skip        = (currentPage - 1) * LIMIT;
+
+        // Count per status for summary pills
+        const [
+            statusCounts,
+            totalFiltered,
+            appointments,
+        ] = await Promise.all([
+            Appointment.aggregate([
+                { $group: { _id: '$status', count: { $sum: 1 } } },
+            ]),
+            Appointment.countDocuments(filter),
+            Appointment.find(filter)
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(LIMIT)
+                .populate('patient', 'name email')
+                .populate('doctor',  'name category image'),
+        ]);
+
+        // Convert statusCounts array to a convenient object  { pending: 5, approved: 3, ... }
+        const counts = { pending: 0, approved: 0, rejected: 0, completed: 0, cancelled: 0, total: 0 };
+        statusCounts.forEach(s => {
+            if (counts[s._id] !== undefined) counts[s._id] = s.count;
+            counts.total += s.count;
+        });
+
+        const totalPages = Math.ceil(totalFiltered / LIMIT) || 1;
+
+        res.render('admin/appointments', {
+            appointments,
+            counts,
+            totalFiltered,
+            currentPage,
+            totalPages,
+            statusFilter   : status,
+            searchQuery    : search,
+            allStatuses    : APPOINTMENT_STATUSES,
+        });
+    } catch (err) {
+        console.error('Admin appointments list error:', err);
+        req.flash('error', 'Could not load appointments.');
+        res.redirect('/admin');
+    }
+};
+
+// ─────────────────────────────────────────────────────────
+// GET /admin/appointments/new
+// Form for admin to create an appointment on behalf of a patient
+// ─────────────────────────────────────────────────────────
+exports.getCreateAppointment = async (req, res) => {
+    try {
+        const [doctors, patients] = await Promise.all([
+            Doctor.find({ availability: { $ne: 'Fully Booked' } }).sort({ name: 1 }),
+            User.find({ role: { $in: ['patient', 'customer'] } }).sort({ name: 1 }).select('name email'),
+        ]);
+        res.render('admin/create-appointment', {
+            doctors,
+            patients,
+            allStatuses : APPOINTMENT_STATUSES,
+            errors      : [],
+            formData    : {},
+        });
+    } catch (err) {
+        console.error('Create appointment form error:', err);
+        req.flash('error', 'Could not load appointment form.');
+        res.redirect('/admin/appointments');
+    }
+};
+
+// ─────────────────────────────────────────────────────────
+// POST /admin/appointments/create
+// Admin creates an appointment on behalf of a patient
+// ─────────────────────────────────────────────────────────
+exports.postCreateAppointment = async (req, res) => {
+    const { patient, doctor, appointmentDate, phone, symptoms, notes, status } = req.body;
+
+    const errors = [];
+    if (!patient)                              errors.push('Please select a patient.');
+    if (!doctor)                               errors.push('Please select a doctor.');
+    if (!appointmentDate)                      errors.push('Appointment date is required.');
+    if (!phone || !phone.trim())               errors.push('Contact phone number is required.');
+    if (!symptoms || !symptoms.trim())         errors.push('Please describe the symptoms or reason.');
+    if (symptoms && symptoms.trim().length < 5) errors.push('Symptom description must be at least 5 characters.');
+
+    let parsedDate = null;
+    if (appointmentDate) {
+        parsedDate = new Date(appointmentDate);
+        if (isNaN(parsedDate.getTime())) errors.push('Invalid appointment date.');
+    }
+
+    if (errors.length) {
+        const [doctors, patients] = await Promise.all([
+            Doctor.find({ availability: { $ne: 'Fully Booked' } }).sort({ name: 1 }),
+            User.find({ role: { $in: ['patient', 'customer'] } }).sort({ name: 1 }).select('name email'),
+        ]);
+        return res.render('admin/create-appointment', {
+            doctors,
+            patients,
+            allStatuses : APPOINTMENT_STATUSES,
+            errors,
+            formData    : req.body,
+        });
+    }
+
+    try {
+        const appointmentStatus = APPOINTMENT_STATUSES.includes(status) ? status : 'pending';
+
+        await Appointment.create({
+            patient        : patient,
+            doctor         : doctor,
+            appointmentDate: parsedDate,
+            phone          : phone.trim(),
+            symptoms       : symptoms.trim(),
+            notes          : notes ? notes.trim() : '',
+            status         : appointmentStatus,
+        });
+
+        req.flash('success', 'Appointment created successfully!');
+        res.redirect('/admin/appointments');
+    } catch (err) {
+        console.error('Admin create appointment error:', err);
+        const [doctors, patients] = await Promise.all([
+            Doctor.find({ availability: { $ne: 'Fully Booked' } }).sort({ name: 1 }),
+            User.find({ role: { $in: ['patient', 'customer'] } }).sort({ name: 1 }).select('name email'),
+        ]);
+        res.render('admin/create-appointment', {
+            doctors,
+            patients,
+            allStatuses : APPOINTMENT_STATUSES,
+            errors      : ['Failed to create appointment. Please try again.'],
+            formData    : req.body,
+        });
+    }
+};
+
+// ─────────────────────────────────────────────────────────
+// GET /admin/appointments/:id
+// View a single appointment with full detail + status update form
+// ─────────────────────────────────────────────────────────
+exports.getAppointmentDetail = async (req, res) => {
+    try {
+        const appointment = await Appointment.findById(req.params.id)
+            .populate('patient', 'name email createdAt')
+            .populate('doctor',  'name category charges qualification image experience');
+
+        if (!appointment) {
+            req.flash('error', 'Appointment not found.');
+            return res.redirect('/admin/appointments');
+        }
+
+        res.render('admin/appointment-detail', {
+            appointment,
+            allStatuses: APPOINTMENT_STATUSES,
+        });
+    } catch (err) {
+        console.error('Appointment detail error:', err);
+        req.flash('error', 'Could not load appointment.');
+        res.redirect('/admin/appointments');
+    }
+};
+
+// ─────────────────────────────────────────────────────────
+// POST /admin/appointments/:id/status
+// Admin updates status (and optional internal note)
+// ─────────────────────────────────────────────────────────
+exports.updateAppointmentStatus = async (req, res) => {
+    try {
+        const { status, adminNotes } = req.body;
+
+        if (!APPOINTMENT_STATUSES.includes(status)) {
+            req.flash('error', 'Invalid status value.');
+            return res.redirect(`/admin/appointments/${req.params.id}`);
+        }
+
+        const appointment = await Appointment.findByIdAndUpdate(
+            req.params.id,
+            {
+                status,
+                adminNotes: adminNotes ? adminNotes.trim() : '',
+            },
+            { new: true, runValidators: true }
+        ).populate('doctor', 'name');
+
+        if (!appointment) {
+            req.flash('error', 'Appointment not found.');
+            return res.redirect('/admin/appointments');
+        }
+
+        req.flash('success', `Appointment status updated to "${status}" successfully.`);
+        res.redirect('/admin/appointments');
+    } catch (err) {
+        console.error('Update appointment status error:', err);
+        req.flash('error', 'Could not update appointment status.');
+        res.redirect('/admin/appointments');
     }
 };

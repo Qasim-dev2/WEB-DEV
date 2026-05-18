@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appointment Detail — Multisensa Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <link href="/css/admin.css" rel="stylesheet">
+  <style>
+    .status-badge { font-size: .8rem; padding: .35em .85em; border-radius: 20px; font-weight: 600; }
+    .status-pending   { background: #fef3c7; color: #92400e; }
+    .status-approved  { background: #d1fae5; color: #065f46; }
+    .status-rejected  { background: #fee2e2; color: #991b1b; }
+    .status-completed { background: #ccfbf1; color: #134e4a; }
+    .status-cancelled { background: #f3f4f6; color: #374151; }
+    .info-label { font-size: .78rem; text-transform: uppercase; letter-spacing: .5px; color: #6b7280; font-weight: 600; }
+    .info-value { font-size: .95rem; color: #111827; }
+    .doctor-img { width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid #0d9488; }
+  </style>
+</head>
+<body class="admin-body">
+
+<%- include('partials/sidebar', { activePage: 'appointments' }) %>
+
+<div class="admin-main">
+  <div class="admin-topbar">
+    <div class="topbar-left">
+      <button class="sidebar-toggle-btn" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+      <div class="topbar-page-title">
+        <h4><i class="fas fa-calendar-check me-2" style="color:#0d9488"></i>Appointment Detail</h4>
+        <small><a href="/admin/appointments" class="text-muted text-decoration-none"><i class="fas fa-arrow-left me-1"></i>Back to list</a></small>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="admin-role-badge"><i class="fas fa-shield-alt me-1"></i>Admin</span>
+    </div>
+  </div>
+
+  <div class="admin-content">
+
+    <% if (success && success.length > 0) { %>
+    <div class="alert alert-success alert-dismissible fade show rounded-3 mb-4" role="alert">
+      <i class="fas fa-check-circle me-2"></i><%= success[0] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <% } %>
+    <% if (error && error.length > 0) { %>
+    <div class="alert alert-danger alert-dismissible fade show rounded-3 mb-4" role="alert">
+      <i class="fas fa-exclamation-circle me-2"></i><%= error[0] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <% } %>
+
+    <div class="row g-4">
+
+      <!-- ── Left: Appointment Info ── -->
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-3">
+          <div class="card-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
+            <h6 class="mb-0 fw-bold"><i class="fas fa-file-medical me-2 text-teal"></i>Appointment Information</h6>
+            <span class="status-badge status-<%= appointment.status %>">
+              <%= appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1) %>
+            </span>
+          </div>
+          <div class="card-body p-4">
+            <div class="row g-4">
+
+              <!-- Patient -->
+              <div class="col-md-6">
+                <p class="info-label mb-1">Patient</p>
+                <p class="info-value fw-semibold mb-0">
+                  <%= appointment.patient ? appointment.patient.name : '—' %>
+                </p>
+                <p class="text-muted small mb-0"><%= appointment.patient ? appointment.patient.email : '' %></p>
+              </div>
+
+              <!-- Phone -->
+              <div class="col-md-6">
+                <p class="info-label mb-1">Contact Phone</p>
+                <p class="info-value mb-0"><%= appointment.phone || '—' %></p>
+              </div>
+
+              <!-- Date -->
+              <div class="col-md-6">
+                <p class="info-label mb-1">Appointment Date & Time</p>
+                <p class="info-value mb-0">
+                  <% if (appointment.appointmentDate) { %>
+                    <%= new Date(appointment.appointmentDate).toLocaleDateString('en-PK', { weekday:'long', day:'2-digit', month:'long', year:'numeric' }) %>
+                    at <%= new Date(appointment.appointmentDate).toLocaleTimeString('en-PK', { hour:'2-digit', minute:'2-digit' }) %>
+                  <% } else { %>—<% } %>
+                </p>
+              </div>
+
+              <!-- Booked At -->
+              <div class="col-md-6">
+                <p class="info-label mb-1">Booking Submitted</p>
+                <p class="info-value mb-0">
+                  <%= new Date(appointment.createdAt).toLocaleDateString('en-PK', { day:'2-digit', month:'short', year:'numeric' }) %>
+                  at <%= new Date(appointment.createdAt).toLocaleTimeString('en-PK', { hour:'2-digit', minute:'2-digit' }) %>
+                </p>
+              </div>
+
+              <!-- Symptoms -->
+              <div class="col-12">
+                <p class="info-label mb-1">Symptoms / Complaint</p>
+                <div class="p-3 rounded-3" style="background:#f9fafb; border:1px solid #e5e7eb;">
+                  <p class="info-value mb-0"><%= appointment.symptoms || '—' %></p>
+                </div>
+              </div>
+
+              <!-- Notes -->
+              <% if (appointment.notes) { %>
+              <div class="col-12">
+                <p class="info-label mb-1">Additional Notes (Patient)</p>
+                <div class="p-3 rounded-3" style="background:#f9fafb; border:1px solid #e5e7eb;">
+                  <p class="info-value mb-0"><%= appointment.notes %></p>
+                </div>
+              </div>
+              <% } %>
+
+              <!-- Admin Notes -->
+              <% if (appointment.adminNotes) { %>
+              <div class="col-12">
+                <p class="info-label mb-1">Admin Notes</p>
+                <div class="p-3 rounded-3" style="background:#fffbeb; border:1px solid #fef3c7;">
+                  <p class="info-value mb-0"><%= appointment.adminNotes %></p>
+                </div>
+              </div>
+              <% } %>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Right: Doctor + Status Update ── -->
+      <div class="col-lg-4">
+
+        <!-- Doctor Card -->
+        <% if (appointment.doctor) { %>
+        <div class="card border-0 shadow-sm rounded-3 mb-4">
+          <div class="card-header bg-white border-bottom py-3 px-4">
+            <h6 class="mb-0 fw-bold"><i class="fas fa-user-md me-2 text-teal"></i>Assigned Specialist</h6>
+          </div>
+          <div class="card-body p-4 text-center">
+            <% const dImg = appointment.doctor.image && appointment.doctor.image.trim()
+                  ? (appointment.doctor.image.startsWith('http') ? appointment.doctor.image : '/uploads/doctors/' + appointment.doctor.image)
+                  : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(appointment.doctor.name) + '&background=0d9488&color=fff'; %>
+            <img src="<%= dImg %>" alt="<%= appointment.doctor.name %>" class="doctor-img mb-3"
+                 onerror="this.src='https://ui-avatars.com/api/?name=<%= encodeURIComponent(appointment.doctor.name) %>&background=0d9488&color=fff'">
+            <h6 class="fw-bold mb-1"><%= appointment.doctor.name %></h6>
+            <p class="text-teal small mb-1 fw-semibold"><%= appointment.doctor.category %></p>
+            <% if (appointment.doctor.charges) { %>
+            <p class="text-muted small mb-0">Rs. <%= appointment.doctor.charges %> / session</p>
+            <% } %>
+          </div>
+        </div>
+        <% } %>
+
+        <!-- Update Status Form -->
+        <div class="card border-0 shadow-sm rounded-3">
+          <div class="card-header bg-white border-bottom py-3 px-4">
+            <h6 class="mb-0 fw-bold"><i class="fas fa-edit me-2 text-teal"></i>Update Status</h6>
+          </div>
+          <div class="card-body p-4">
+            <form action="/admin/appointments/<%= appointment._id %>/status" method="POST">
+              <div class="mb-3">
+                <label class="form-label fw-semibold small">New Status</label>
+                <select name="status" class="form-select" required>
+                  <% allStatuses.forEach(s => { %>
+                  <option value="<%= s %>" <%= appointment.status === s ? 'selected' : '' %>>
+                    <%= s.charAt(0).toUpperCase() + s.slice(1) %>
+                  </option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold small">Internal Note <span class="text-muted fw-normal">(optional)</span></label>
+                <textarea name="adminNotes" class="form-control" rows="3"
+                  placeholder="Reason for rejection, instructions for patient, etc."><%= appointment.adminNotes || '' %></textarea>
+              </div>
+              <button type="submit" class="btn btn-teal w-100 fw-semibold">
+                <i class="fas fa-save me-2"></i>Save Changes
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /.row -->
+
+  </div><!-- /.admin-content -->
+</div><!-- /.admin-main -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/script.js"></script>
+</body>
+</html>

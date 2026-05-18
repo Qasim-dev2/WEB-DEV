@@ -17,14 +17,12 @@
         }
         body { background: #f0f4ff; font-family: 'Segoe UI', sans-serif; }
 
-        /* ── Hero ── */
         .doctor-hero {
             background: linear-gradient(135deg, var(--doc-dark) 0%, var(--doc-primary) 55%, #60a5fa 100%);
             border-radius: 0 0 40px 40px;
-            padding: 3rem 2rem 4rem;
+            padding: 3rem 2rem 5rem;
             color: #fff;
-            position: relative;
-            overflow: hidden;
+            position: relative; overflow: hidden;
         }
         .doctor-hero::before {
             content: '';
@@ -38,7 +36,12 @@
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             font-size: 2rem; font-weight: 700; color: #fff;
-            backdrop-filter: blur(4px);
+        }
+        .online-dot {
+            width: 14px; height: 14px;
+            background: #4ade80; border: 2px solid #fff;
+            border-radius: 50%;
+            position: absolute; bottom: 4px; right: 4px;
         }
         .hero-badge-doc {
             background: rgba(255,255,255,0.15);
@@ -46,15 +49,6 @@
             color: #bfdbfe; border-radius: 20px;
             padding: 4px 14px; font-size: 0.75rem;
         }
-        .online-dot {
-            width: 14px; height: 14px;
-            background: #4ade80;
-            border: 2px solid #fff;
-            border-radius: 50%;
-            position: absolute; bottom: 4px; right: 4px;
-        }
-
-        /* ── Stat cards ── */
         .stat-card {
             border: none; border-radius: var(--card-radius);
             background: #fff;
@@ -67,12 +61,12 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 1.35rem;
         }
-        .si-blue   { background: #eff6ff; color: var(--doc-primary); }
-        .si-green  { background: #f0fdf4; color: #16a34a; }
-        .si-indigo { background: #eef2ff; color: #6366f1; }
-        .si-amber  { background: #fffbeb; color: #d97706; }
+        .si-blue   { background:#eff6ff; color:var(--doc-primary); }
+        .si-green  { background:#f0fdf4; color:#16a34a; }
+        .si-indigo { background:#eef2ff; color:#6366f1; }
+        .si-amber  { background:#fffbeb; color:#d97706; }
+        .si-rose   { background:#fff1f2; color:#e11d48; }
 
-        /* ── Section title ── */
         .section-title {
             font-size: 1.05rem; font-weight: 700;
             color: #0f172a; letter-spacing: .3px;
@@ -83,8 +77,6 @@
             background: linear-gradient(90deg, var(--doc-primary), transparent);
             border-radius: 2px;
         }
-
-        /* ── Profile info card ── */
         .profile-info-card {
             border: none; border-radius: var(--card-radius);
             background: #fff; overflow: hidden;
@@ -102,59 +94,51 @@
             width: 80px; height: 80px; border-radius: 50%;
             background: rgba(255,255,255,.2); border: 3px solid rgba(255,255,255,.5);
             display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; font-weight: 700; color: #fff;
-            margin: 0 auto 8px;
+            font-size: 2rem; font-weight: 700; color: #fff; margin: 0 auto 8px;
         }
-
-        /* ── Schedule grid ── */
-        .schedule-day {
-            background: #fff; border: 1px solid #e2e8f0;
-            border-radius: 12px; padding: .75rem 1rem;
-            display: flex; align-items: center; justify-content: space-between;
-            font-size: .82rem;
-        }
-        .schedule-day.active { border-color: var(--doc-accent); background: var(--doc-light); }
-        .day-label { font-weight: 600; color: #374151; }
-        .day-badge-on  { background: #dcfce7; color: #15803d; font-size: .68rem; padding: 2px 8px; border-radius: 10px; }
-        .day-badge-off { background: #f1f5f9; color: #94a3b8; font-size: .68rem; padding: 2px 8px; border-radius: 10px; }
-
-        /* ── Colleague cards ── */
-        .colleague-card {
-            background: #fff; border-radius: 12px;
-            padding: .75rem 1rem; border: 1px solid #e2e8f0;
-            display: flex; align-items: center; gap: 12px;
+        .appt-row {
+            background:#fff; border:1px solid #e2e8f0; border-radius:12px;
+            padding:.75rem 1rem; display:flex; align-items:center; gap:12px;
             transition: all .2s;
         }
-        .colleague-card:hover { border-color: var(--doc-accent); box-shadow: 0 2px 10px rgba(59,130,246,.1); }
-        .colleague-avatar {
-            width: 44px; height: 44px; border-radius: 50%;
+        .appt-row:hover { border-color:var(--doc-accent); box-shadow:0 2px 10px rgba(59,130,246,.1); }
+        .patient-avatar {
+            width:42px; height:42px; border-radius:50%;
             background: linear-gradient(135deg, var(--doc-primary), var(--doc-accent));
-            color: #fff; font-weight: 700;
-            display: flex; align-items: center; justify-content: center;
+            color:#fff; font-weight:700;
+            display:flex; align-items:center; justify-content:center; flex-shrink:0;
         }
-
-        /* ── Quick actions ── */
+        .badge-status { display:inline-block; padding:3px 10px; border-radius:20px; font-size:.7rem; font-weight:600; }
+        .bs-pending   { background:#fef9c3; color:#854d0e; }
+        .bs-approved  { background:#dcfce7; color:#15803d; }
+        .bs-completed { background:#cffafe; color:#0e7490; }
+        .bs-rejected  { background:#ffe4e6; color:#be123c; }
+        .bs-cancelled { background:#f1f5f9; color:#64748b; }
         .qa-btn-doc {
-            border-radius: 14px; padding: 1rem 1.2rem;
-            font-weight: 600; font-size: .88rem;
-            display: flex; align-items: center; gap: 10px;
-            transition: all .2s; text-decoration: none;
+            border-radius:14px; padding:1rem 1.2rem;
+            font-weight:600; font-size:.88rem;
+            display:flex; align-items:center; gap:10px;
+            transition:all .2s; text-decoration:none;
         }
-        .qa-btn-blue { background: var(--doc-light); color: var(--doc-dark); border: 1px solid #bfdbfe; }
-        .qa-btn-blue:hover { background: var(--doc-primary); color: #fff; }
-
-        /* ── Status highlight ── */
+        .qa-btn-blue { background:var(--doc-light); color:var(--doc-dark); border:1px solid #bfdbfe; }
+        .qa-btn-blue:hover { background:var(--doc-primary); color:#fff; }
+        .schedule-day {
+            background:#fff; border:1px solid #e2e8f0;
+            border-radius:12px; padding:.75rem 1rem;
+            display:flex; align-items:center; justify-content:space-between;
+            font-size:.82rem;
+        }
+        .schedule-day.today-day { border-color:var(--doc-accent); background:var(--doc-light); }
+        .day-badge-on  { background:#dcfce7; color:#15803d; font-size:.68rem; padding:2px 8px; border-radius:10px; }
+        .day-badge-off { background:#f1f5f9; color:#94a3b8; font-size:.68rem; padding:2px 8px; border-radius:10px; }
         .status-pill {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: #f0fdf4; color: #15803d;
-            border: 1px solid #bbf7d0; border-radius: 20px;
-            padding: 4px 14px; font-size: .75rem; font-weight: 600;
+            display:inline-flex; align-items:center; gap:6px;
+            background:#f0fdf4; color:#15803d;
+            border:1px solid #bbf7d0; border-radius:20px;
+            padding:4px 14px; font-size:.75rem; font-weight:600;
         }
-        .status-pulse {
-            width: 8px; height: 8px; border-radius: 50%; background: #22c55e;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.4; } }
+        .status-pulse { width:8px; height:8px; border-radius:50%; background:#22c55e; animation:pulse 1.5s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
     </style>
 </head>
 <body>
@@ -162,51 +146,65 @@
 <%- include('../partials/navbar') %>
 <%- include('../partials/flash') %>
 
-<!-- ── HERO ─────────────────────────────────────────── -->
+<!-- HERO -->
 <div class="doctor-hero">
     <div class="container">
         <div class="d-flex align-items-center gap-4 flex-wrap">
             <div class="position-relative d-inline-block">
-                <div class="hero-avatar-doc">
-                    <%= currentUser.name.charAt(0).toUpperCase() %>
-                </div>
+                <% if (doctor.image && doctor.image.trim()) { %>
+                <img src="<%= doctor.image.startsWith('http') ? doctor.image : '/uploads/doctors/' + doctor.image %>"
+                     alt="<%= doctor.name %>"
+                     style="width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.5);"
+                     onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="hero-avatar-doc" style="display:none"><%= doctor.name.charAt(0).toUpperCase() %></div>
+                <% } else { %>
+                <div class="hero-avatar-doc"><%= doctor.name.charAt(0).toUpperCase() %></div>
+                <% } %>
                 <div class="online-dot"></div>
             </div>
             <div>
                 <div class="mb-1"><span class="hero-badge-doc"><i class="fas fa-user-md me-1"></i>Doctor Portal</span></div>
-                <h1 class="fw-bold mb-1 fs-3">Dr. <%= currentUser.name %></h1>
+                <h1 class="fw-bold mb-1 fs-3"><%= currentUser.name %></h1>
                 <div class="d-flex align-items-center gap-2 flex-wrap">
-                    <% if (doctorProfile) { %>
-                    <span style="opacity:.85; font-size:.9rem;"><%= doctorProfile.category %></span>
+                    <span style="opacity:.85;font-size:.9rem;"><%= doctor.category %></span>
                     <span style="opacity:.5;">•</span>
-                    <span style="opacity:.85; font-size:.9rem;"><%= doctorProfile.experience %> yrs exp.</span>
-                    <% } else { %>
-                    <span style="opacity:.75; font-size:.9rem;">Multisensa Rehabilitation Center</span>
-                    <% } %>
+                    <span style="opacity:.85;font-size:.9rem;"><%= doctor.experience %> yrs exp.</span>
                     <div class="status-pill"><div class="status-pulse"></div>On Duty</div>
                 </div>
             </div>
         </div>
         <div class="mt-4 d-flex flex-wrap gap-2">
-            <a href="/profile" class="btn btn-light btn-sm fw-semibold px-4 rounded-pill">
+            <a href="/doctor/appointments" class="btn btn-light btn-sm fw-semibold px-4 rounded-pill">
+                <i class="fas fa-calendar-check me-1"></i> My Appointments
+            </a>
+            <a href="/doctor/profile" class="btn btn-outline-light btn-sm px-4 rounded-pill">
                 <i class="fas fa-id-card me-1"></i> My Profile
             </a>
-            <a href="/doctors" class="btn btn-outline-light btn-sm px-4 rounded-pill">
-                <i class="fas fa-users me-1"></i> All Specialists
+            <a href="/doctors/<%= doctor._id %>" class="btn btn-outline-light btn-sm px-4 rounded-pill">
+                <i class="fas fa-eye me-1"></i> Public View
             </a>
         </div>
     </div>
 </div>
 
-<!-- ── STATS ROW ─────────────────────────────────────── -->
-<div class="container mt-n3 pb-4" style="position:relative; z-index:10;">
+<!-- STATS ROW -->
+<div class="container mt-n4 pb-4" style="position:relative;z-index:10;">
     <div class="row g-3">
         <div class="col-6 col-md-3">
             <div class="stat-card p-3 d-flex align-items-center gap-3">
-                <div class="stat-icon-doc si-blue"><i class="fas fa-users"></i></div>
+                <div class="stat-icon-doc si-blue"><i class="fas fa-calendar-alt"></i></div>
                 <div>
-                    <div class="fw-bold fs-5 lh-1"><%= totalPatients %></div>
-                    <div class="text-muted" style="font-size:.74rem;">Total Patients</div>
+                    <div class="fw-bold fs-5 lh-1"><%= totalAppointments %></div>
+                    <div class="text-muted" style="font-size:.74rem;">Total Appointments</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card p-3 d-flex align-items-center gap-3">
+                <div class="stat-icon-doc si-amber"><i class="fas fa-clock"></i></div>
+                <div>
+                    <div class="fw-bold fs-5 lh-1"><%= pendingCount %></div>
+                    <div class="text-muted" style="font-size:.74rem;">Pending Review</div>
                 </div>
             </div>
         </div>
@@ -214,135 +212,126 @@
             <div class="stat-card p-3 d-flex align-items-center gap-3">
                 <div class="stat-icon-doc si-green"><i class="fas fa-calendar-check"></i></div>
                 <div>
-                    <div class="fw-bold fs-5 lh-1">0</div>
+                    <div class="fw-bold fs-5 lh-1"><%= todayCount %></div>
                     <div class="text-muted" style="font-size:.74rem;">Today's Sessions</div>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3">
             <div class="stat-card p-3 d-flex align-items-center gap-3">
-                <div class="stat-icon-doc si-indigo"><i class="fas fa-star"></i></div>
+                <div class="stat-icon-doc si-indigo"><i class="fas fa-check-double"></i></div>
                 <div>
-                    <div class="fw-bold fs-5 lh-1"><%= doctorProfile ? doctorProfile.rating.toFixed(1) : 'N/A' %></div>
-                    <div class="text-muted" style="font-size:.74rem;">My Rating</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-card p-3 d-flex align-items-center gap-3">
-                <div class="stat-icon-doc si-amber"><i class="fas fa-coins"></i></div>
-                <div>
-                    <div class="fw-bold fs-5 lh-1"><%= doctorProfile ? 'PKR ' + doctorProfile.charges.toLocaleString() : 'N/A' %></div>
-                    <div class="text-muted" style="font-size:.74rem;">Consultation Fee</div>
+                    <div class="fw-bold fs-5 lh-1"><%= completedCount %></div>
+                    <div class="text-muted" style="font-size:.74rem;">Completed</div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ── MAIN CONTENT ──────────────────────────────────── -->
+<!-- MAIN CONTENT -->
 <div class="container pb-5">
     <div class="row g-4">
 
-        <!-- ── LEFT COLUMN ── -->
+        <!-- LEFT -->
         <div class="col-lg-8">
 
-            <!-- My Profile Card -->
-            <% if (doctorProfile) { %>
+            <!-- Profile Card -->
             <div class="profile-info-card mb-4">
                 <div class="profile-info-header">
-                    <% if (doctorProfile.image) { %>
-                    <img src="/uploads/doctors/<%= doctorProfile.image %>" alt="<%= doctorProfile.name %>" class="profile-doc-avatar" />
+                    <% if (doctor.image && doctor.image.trim()) { %>
+                    <img src="<%= doctor.image.startsWith('http') ? doctor.image : '/uploads/doctors/' + doctor.image %>"
+                         alt="<%= doctor.name %>" class="profile-doc-avatar"
+                         onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="profile-doc-initials" style="display:none"><%= doctor.name.charAt(0) %></div>
                     <% } else { %>
-                    <div class="profile-doc-initials"><%= doctorProfile.name.charAt(0) %></div>
+                    <div class="profile-doc-initials"><%= doctor.name.charAt(0) %></div>
                     <% } %>
-                    <h5 class="fw-bold mb-1"><%= doctorProfile.name %></h5>
-                    <p class="mb-0 opacity-80" style="font-size:.85rem;"><%= doctorProfile.category %> · <%= doctorProfile.qualification %></p>
+                    <h5 class="fw-bold mb-1 mt-1"><%= doctor.name %></h5>
+                    <p class="mb-0 opacity-80" style="font-size:.85rem;"><%= doctor.category %> · <%= doctor.qualification %></p>
                 </div>
                 <div class="p-4">
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <div class="d-flex align-items-center gap-2">
-                                <div class="stat-icon-doc si-blue" style="width:36px;height:36px;border-radius:10px;font-size:1rem;">
-                                    <i class="fas fa-briefcase-medical"></i>
-                                </div>
-                                <div>
-                                    <div style="font-size:.7rem;color:#64748b;">Experience</div>
-                                    <div class="fw-semibold" style="font-size:.88rem;"><%= doctorProfile.experience %> Years</div>
-                                </div>
+                                <div class="stat-icon-doc si-blue" style="width:36px;height:36px;border-radius:10px;font-size:1rem;"><i class="fas fa-briefcase-medical"></i></div>
+                                <div><div style="font-size:.7rem;color:#64748b;">Experience</div><div class="fw-semibold" style="font-size:.88rem;"><%= doctor.experience %> Years</div></div>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="d-flex align-items-center gap-2">
-                                <div class="stat-icon-doc si-indigo" style="width:36px;height:36px;border-radius:10px;font-size:1rem;">
-                                    <i class="fas fa-graduation-cap"></i>
-                                </div>
-                                <div>
-                                    <div style="font-size:.7rem;color:#64748b;">Qualification</div>
-                                    <div class="fw-semibold" style="font-size:.88rem;"><%= doctorProfile.qualification %></div>
-                                </div>
+                                <div class="stat-icon-doc si-indigo" style="width:36px;height:36px;border-radius:10px;font-size:1rem;"><i class="fas fa-graduation-cap"></i></div>
+                                <div><div style="font-size:.7rem;color:#64748b;">Qualification</div><div class="fw-semibold" style="font-size:.88rem;"><%= doctor.qualification %></div></div>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="d-flex align-items-center gap-2">
-                                <div class="stat-icon-doc si-green" style="width:36px;height:36px;border-radius:10px;font-size:1rem;">
-                                    <i class="fas fa-circle-check"></i>
-                                </div>
-                                <div>
-                                    <div style="font-size:.7rem;color:#64748b;">Availability</div>
+                                <div class="stat-icon-doc si-amber" style="width:36px;height:36px;border-radius:10px;font-size:1rem;"><i class="fas fa-coins"></i></div>
+                                <div><div style="font-size:.7rem;color:#64748b;">Consultation Fee</div><div class="fw-semibold" style="font-size:.88rem;">PKR <%= doctor.charges.toLocaleString() %></div></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="stat-icon-doc si-green" style="width:36px;height:36px;border-radius:10px;font-size:1rem;"><i class="fas fa-circle-check"></i></div>
+                                <div><div style="font-size:.7rem;color:#64748b;">Availability</div>
                                     <div class="fw-semibold" style="font-size:.88rem;">
-                                        <span class="<%= doctorProfile.availability === 'Available' ? 'text-success' : 'text-danger' %>">
-                                            <%= doctorProfile.availability %>
-                                        </span>
+                                        <span class="<%= doctor.availability === 'Available' ? 'text-success' : (doctor.availability === 'Fully Booked' ? 'text-danger' : 'text-warning') %>"><%= doctor.availability %></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="stat-icon-doc si-amber" style="width:36px;height:36px;border-radius:10px;font-size:1rem;">
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <div>
-                                    <div style="font-size:.7rem;color:#64748b;">Patient Rating</div>
-                                    <div class="fw-semibold" style="font-size:.88rem;"><%= doctorProfile.rating.toFixed(1) %> / 5.0</div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-                    <% if (doctorProfile.description) { %>
+                    <% if (doctor.description) { %>
                     <hr class="my-3">
-                    <p class="mb-0" style="font-size:.85rem;color:#475569;line-height:1.7;"><%= doctorProfile.description %></p>
+                    <p class="mb-0" style="font-size:.85rem;color:#475569;line-height:1.7;"><%= doctor.description %></p>
                     <% } %>
-                    <div class="mt-3">
-                        <a href="/doctors/<%= doctorProfile._id %>" class="btn btn-sm px-4 rounded-pill fw-semibold text-white" style="background:var(--doc-primary); font-size:.82rem;">
-                            <i class="fas fa-eye me-1"></i> View Public Profile
-                        </a>
-                    </div>
                 </div>
             </div>
-            <% } else { %>
-            <div class="stat-card p-4 mb-4 text-center" style="border: 2px dashed #bfdbfe;">
-                <div style="font-size:3rem; opacity:.3;"><i class="fas fa-id-badge"></i></div>
-                <h6 class="fw-semibold text-muted mt-3 mb-1">No Clinic Profile Linked</h6>
-                <p class="text-muted small">Your doctor profile hasn't been linked yet. Contact the admin to set up your listing.</p>
-                <a href="/doctors" class="btn btn-sm px-4 rounded-pill fw-semibold" style="background:var(--doc-light);color:var(--doc-dark);border:1px solid #bfdbfe;">
-                    View All Doctors
-                </a>
+
+            <!-- Recent Appointments -->
+            <div class="mb-4">
+                <p class="section-title mb-3"><i class="fas fa-calendar-alt" style="color:var(--doc-primary)"></i> Recent Appointments</p>
+                <% if (recentAppointments.length === 0) { %>
+                <div class="text-center py-5 rounded-3" style="background:#fff;border:2px dashed #bfdbfe;">
+                    <div style="font-size:2.5rem;opacity:.3;"><i class="fas fa-calendar-xmark"></i></div>
+                    <p class="text-muted mt-2 mb-0">No appointments yet</p>
+                </div>
+                <% } else { %>
+                <div class="d-flex flex-column gap-2">
+                    <% recentAppointments.forEach(appt => { %>
+                    <div class="appt-row">
+                        <div class="patient-avatar"><%= appt.patient ? appt.patient.name.charAt(0).toUpperCase() : '?' %></div>
+                        <div class="flex-grow-1 overflow-hidden">
+                            <div class="fw-semibold text-dark text-truncate" style="font-size:.88rem;"><%= appt.patient ? appt.patient.name : 'Unknown Patient' %></div>
+                            <div class="text-muted" style="font-size:.75rem;"><%= appt.patient ? appt.patient.email : '' %></div>
+                        </div>
+                        <div class="text-end flex-shrink-0">
+                            <div style="font-size:.75rem;color:#64748b;"><i class="fas fa-calendar me-1"></i><%= new Date(appt.appointmentDate).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) %></div>
+                            <div style="font-size:.73rem;color:#64748b;"><i class="fas fa-clock me-1"></i><%= new Date(appt.appointmentDate).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) %></div>
+                            <span class="badge-status bs-<%= appt.status %> mt-1 d-inline-block"><%= appt.status.charAt(0).toUpperCase() + appt.status.slice(1) %></span>
+                        </div>
+                    </div>
+                    <% }) %>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="/doctor/appointments" class="btn btn-sm px-4 rounded-pill fw-semibold" style="background:var(--doc-light);color:var(--doc-dark);border:1px solid #bfdbfe;">
+                        View All Appointments <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+                <% } %>
             </div>
-            <% } %>
 
             <!-- Weekly Schedule -->
             <div class="mb-4">
                 <p class="section-title mb-3"><i class="fas fa-calendar-week" style="color:var(--doc-primary)"></i> My Weekly Schedule</p>
                 <div class="row g-2">
-                    <% const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']; %>
-                    <% const workDays = ['Monday','Tuesday','Wednesday','Thursday','Friday']; %>
-                    <% const today = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()]; %>
+                    <% const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+                       const workDays = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+                       const todayName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()]; %>
                     <% days.forEach(day => { %>
                     <div class="col-sm-6">
-                        <div class="schedule-day <%= day === today ? 'active' : '' %>">
-                            <span class="day-label"><%= day === today ? '▶ ' : '' %><%= day %></span>
+                        <div class="schedule-day <%= day === todayName ? 'today-day' : '' %>">
+                            <span style="font-weight:600;color:#374151;font-size:.82rem;"><%= day === todayName ? '▶ ' : '' %><%= day %></span>
                             <div class="d-flex align-items-center gap-2">
                                 <% if (workDays.includes(day)) { %>
                                 <span style="font-size:.75rem;color:#64748b;">09:00 – 17:00</span>
@@ -356,47 +345,49 @@
                     <% }) %>
                 </div>
             </div>
-
-            <!-- Colleague Cards -->
-            <div>
-                <p class="section-title mb-3"><i class="fas fa-user-group" style="color:var(--doc-primary)"></i> Top Colleagues</p>
-                <div class="row g-2">
-                    <% allDoctors.forEach(d => { %>
-                    <div class="col-md-6">
-                        <a href="/doctors/<%= d._id %>" class="colleague-card text-decoration-none">
-                            <div class="colleague-avatar"><%= d.name.charAt(0) %></div>
-                            <div class="flex-grow-1 overflow-hidden">
-                                <div class="fw-semibold text-dark text-truncate" style="font-size:.85rem;"><%= d.name %></div>
-                                <div class="text-muted" style="font-size:.72rem;"><%= d.category %></div>
-                            </div>
-                            <div class="text-end flex-shrink-0">
-                                <div style="font-size:.7rem;color:#f59e0b;">
-                                    <i class="fas fa-star"></i> <%= d.rating.toFixed(1) %>
-                                </div>
-                                <span class="<%= d.availability === 'Available' ? 'day-badge-on' : 'day-badge-off' %>"><%= d.availability === 'Available' ? 'Available' : 'Busy' %></span>
-                            </div>
-                        </a>
-                    </div>
-                    <% }) %>
-                </div>
-            </div>
         </div>
 
-        <!-- ── RIGHT SIDEBAR ── -->
+        <!-- RIGHT SIDEBAR -->
         <div class="col-lg-4">
+
+            <!-- Appointment Status Summary -->
+            <div class="stat-card p-4 mb-4">
+                <p class="section-title mb-3 fs-6"><i class="fas fa-chart-pie" style="color:var(--doc-primary)"></i> Appointment Summary</p>
+                <div class="d-flex flex-column gap-2">
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <span style="font-size:.85rem;">Pending</span>
+                        <span class="badge-status bs-pending"><%= pendingCount %></span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <span style="font-size:.85rem;">Approved</span>
+                        <span class="badge-status bs-approved"><%= approvedCount %></span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <span style="font-size:.85rem;">Completed</span>
+                        <span class="badge-status bs-completed"><%= completedCount %></span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center py-2">
+                        <span style="font-size:.85rem;font-weight:600;">Total</span>
+                        <span class="fw-bold" style="color:var(--doc-primary);"><%= totalAppointments %></span>
+                    </div>
+                </div>
+                <a href="/doctor/appointments" class="btn w-100 mt-3 rounded-pill btn-sm fw-semibold" style="background:var(--doc-primary);color:#fff;font-size:.82rem;">
+                    <i class="fas fa-list me-1"></i> View All Appointments
+                </a>
+            </div>
 
             <!-- Quick Actions -->
             <div class="stat-card p-4 mb-4">
                 <p class="section-title mb-3 fs-6"><i class="fas fa-bolt" style="color:var(--doc-primary)"></i> Quick Actions</p>
                 <div class="d-flex flex-column gap-2">
-                    <a href="/doctors" class="qa-btn-doc qa-btn-blue">
-                        <i class="fas fa-users"></i> Browse All Specialists
+                    <a href="/doctor/appointments" class="qa-btn-doc qa-btn-blue">
+                        <i class="fas fa-calendar-check"></i> My Appointments
                     </a>
-                    <a href="/profile" class="qa-btn-doc qa-btn-blue">
-                        <i class="fas fa-id-card"></i> My Account Profile
+                    <a href="/doctor/profile" class="qa-btn-doc qa-btn-blue">
+                        <i class="fas fa-id-card"></i> My Profile
                     </a>
-                    <a href="/doctors?sort=rating" class="qa-btn-doc qa-btn-blue">
-                        <i class="fas fa-chart-line"></i> Top Rated Doctors
+                    <a href="/doctors/<%= doctor._id %>" class="qa-btn-doc qa-btn-blue">
+                        <i class="fas fa-eye"></i> View Public Listing
                     </a>
                     <a href="/logout" class="qa-btn-doc" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:14px;padding:1rem 1.2rem;font-weight:600;font-size:.88rem;display:flex;align-items:center;gap:10px;text-decoration:none;">
                         <i class="fas fa-sign-out-alt"></i> Sign Out
@@ -404,38 +395,26 @@
                 </div>
             </div>
 
-            <!-- Guidelines Card -->
-            <div class="stat-card p-4 mb-4" style="background:linear-gradient(135deg,var(--doc-light),#eef2ff);">
+            <!-- Clinic Guidelines -->
+            <div class="stat-card p-4" style="background:linear-gradient(135deg,var(--doc-light),#eef2ff);">
                 <p class="fw-bold mb-3" style="font-size:.9rem;color:var(--doc-dark);">
                     <i class="fas fa-clipboard-list me-1"></i> Clinic Guidelines
                 </p>
                 <ul class="list-unstyled mb-0" style="font-size:.82rem;color:#374151;">
                     <li class="d-flex gap-2 mb-2"><i class="fas fa-check-circle mt-1 flex-shrink-0" style="color:#3b82f6;font-size:.75rem;"></i><span>Report to admin for any schedule changes.</span></li>
-                    <li class="d-flex gap-2 mb-2"><i class="fas fa-check-circle mt-1 flex-shrink-0" style="color:#3b82f6;font-size:.75rem;"></i><span>Patient records are to remain strictly confidential.</span></li>
+                    <li class="d-flex gap-2 mb-2"><i class="fas fa-check-circle mt-1 flex-shrink-0" style="color:#3b82f6;font-size:.75rem;"></i><span>Patient records must remain strictly confidential.</span></li>
                     <li class="d-flex gap-2 mb-2"><i class="fas fa-check-circle mt-1 flex-shrink-0" style="color:#3b82f6;font-size:.75rem;"></i><span>Update your availability status at the start of each session.</span></li>
-                    <li class="d-flex gap-2"><i class="fas fa-check-circle mt-1 flex-shrink-0" style="color:#3b82f6;font-size:.75rem;"></i><span>For patient emergencies, follow SOP and notify the admin immediately.</span></li>
+                    <li class="d-flex gap-2"><i class="fas fa-check-circle mt-1 flex-shrink-0" style="color:#3b82f6;font-size:.75rem;"></i><span>For emergencies, follow SOP and notify admin immediately.</span></li>
                 </ul>
-            </div>
-
-            <!-- Contact Admin -->
-            <div class="p-4 rounded-4 text-center" style="background:var(--doc-primary);color:#fff;">
-                <i class="fas fa-headset fa-2x mb-2 opacity-90"></i>
-                <h6 class="fw-bold mb-1">Need Admin Support?</h6>
-                <p class="mb-3 opacity-80" style="font-size:.8rem;">Contact the clinic admin for profile updates or schedule changes.</p>
-                <a href="mailto:admin@multisensa.com" class="btn btn-sm btn-light rounded-pill fw-semibold px-4" style="font-size:.8rem;color:var(--doc-dark);">
-                    <i class="fas fa-envelope me-1"></i> Contact Admin
-                </a>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ── FOOTER ─────────────────────────────────────────── -->
-<footer class="text-center py-4" style="background:#fff; border-top:1px solid #e2e8f0;">
+<footer class="text-center py-4" style="background:#fff;border-top:1px solid #e2e8f0;">
     <p class="mb-0 text-muted small">&copy; <%= new Date().getFullYear() %> Multisensa Rehabilitation Center. All rights reserved.</p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/js/script.js"></script>
 </body>
 </html>

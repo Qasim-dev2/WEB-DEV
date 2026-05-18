@@ -10,27 +10,36 @@ const isAdmin    = require('../middleware/isAdmin');
 router.use(isLoggedIn, isAdmin);
 
 // ── Dashboard ─────────────────────────────────────────────
-// GET /admin
 router.get('/', adminCtrl.getDashboard);
 
+// ── Appointment Management ────────────────────────────────
+// GET  /admin/appointments              → list all appointments (filter, paginate)
+// GET  /admin/appointments/new          → form to create appointment (admin on behalf of patient)
+// POST /admin/appointments/create       → submit new appointment
+// GET  /admin/appointments/:id          → single appointment detail
+// POST /admin/appointments/:id/status   → update appointment status
+router.get ('/appointments',               adminCtrl.getAppointments);
+router.get ('/appointments/new',           adminCtrl.getCreateAppointment);
+router.post('/appointments/create',        adminCtrl.postCreateAppointment);
+router.get ('/appointments/:id',           adminCtrl.getAppointmentDetail);
+router.post('/appointments/:id/status',    adminCtrl.updateAppointmentStatus);
+
 // ── Doctor List ───────────────────────────────────────────
-// GET /admin/doctors
 router.get('/doctors', adminCtrl.getDoctors);
 
 // ── Add Doctor ────────────────────────────────────────────
-// GET  /admin/doctors/new  → render form
-// POST /admin/doctors      → save to DB (with image upload)
 router.get('/doctors/new', adminCtrl.getAddDoctor);
 router.post('/doctors', upload.single('image'), adminCtrl.postAddDoctor);
 
 // ── Edit Doctor ───────────────────────────────────────────
-// GET /admin/doctors/:id/edit  → render form with existing data
-// PUT /admin/doctors/:id       → save updated data (method-override)
 router.get('/doctors/:id/edit', adminCtrl.getEditDoctor);
 router.put('/doctors/:id', upload.single('image'), adminCtrl.putDoctor);
 
 // ── Delete Doctor ─────────────────────────────────────────
-// DELETE /admin/doctors/:id   (method-override from form)
 router.delete('/doctors/:id', adminCtrl.deleteDoctor);
+
+// ── Link / Unlink Doctor ↔ User account ──────────────────
+router.post('/doctors/:id/link',   adminCtrl.linkDoctorUser);
+router.post('/doctors/:id/unlink', adminCtrl.unlinkDoctorUser);
 
 module.exports = router;

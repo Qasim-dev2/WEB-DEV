@@ -136,8 +136,8 @@
                                            max="60">
                                 </div>
 
-                                <!-- Charges & Rating -->
-                                <div class="col-md-6">
+                                <!-- Charges -->
+                                <div class="col-md-12">
                                     <label class="form-label" for="charges">
                                         <i class="fas fa-money-bill-wave me-1" style="color:#0d9488;"></i>
                                         Consultation Charges (PKR) <span style="color:#ef4444;">*</span>
@@ -155,41 +155,9 @@
                                                style="border-left:none;border-radius:0 8px 8px 0;">
                                     </div>
                                 </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label" for="rating">
-                                        <i class="fas fa-star me-1" style="color:#f59e0b;"></i>
-                                        Patient Rating (1–5)
-                                    </label>
-                                    <input type="number"
-                                           id="rating"
-                                           name="rating"
-                                           class="form-control"
-                                           value="<%= formData.rating || '4.0' %>"
-                                           placeholder="e.g. 4.5"
-                                           min="1"
-                                           max="5"
-                                           step="0.1">
-                                </div>
-
-                                <!-- Availability -->
-                                <div class="col-md-12">
-                                    <label class="form-label" for="availability">
-                                        <i class="fas fa-calendar-check me-1" style="color:#0d9488;"></i>
-                                        Appointment Availability
-                                    </label>
-                                    <select id="availability" name="availability" class="form-select">
-                                        <option value="Available"       <%= (formData.availability === 'Available'       || !formData.availability) ? 'selected' : '' %>>
-                                            ✅ Available
-                                        </option>
-                                        <option value="Limited Slots"   <%= formData.availability === 'Limited Slots'   ? 'selected' : '' %>>
-                                            ⚠️ Limited Slots
-                                        </option>
-                                        <option value="Fully Booked"    <%= formData.availability === 'Fully Booked'    ? 'selected' : '' %>>
-                                            ❌ Fully Booked
-                                        </option>
-                                    </select>
-                                </div>
+                                <!-- Hidden defaults for rating & availability -->
+                                <input type="hidden" name="rating" value="4.0">
+                                <input type="hidden" name="availability" value="Available">
 
                                 <!-- Description -->
                                 <div class="col-md-12">
@@ -206,6 +174,55 @@
                                     <div class="form-text" style="font-size:12px;color:#9ca3af;">
                                         Aim for 2–3 sentences covering expertise and experience.
                                     </div>
+                                </div>
+
+                                <!-- Divider — Login Account -->
+                                <div class="col-md-12">
+                                    <hr style="border-color:#e5e7eb;margin:8px 0 0;">
+                                    <p style="font-size:13px;font-weight:700;color:#0d9488;margin:12px 0 2px;">
+                                        <i class="fas fa-lock me-1"></i> Login Account
+                                        <span style="font-weight:400;color:#6b7280;font-size:12px;">(optional)</span>
+                                    </p>
+                                    <p style="font-size:12px;color:#6b7280;margin:0 0 4px;">
+                                        Provide credentials so this doctor can log in and view their dashboard. Leave both fields blank to skip.
+                                    </p>
+                                </div>
+
+                                <!-- Login Email -->
+                                <div class="col-md-6">
+                                    <label class="form-label" for="loginEmail">
+                                        <i class="fas fa-envelope me-1" style="color:#0d9488;"></i>
+                                        Login Email
+                                    </label>
+                                    <input type="email"
+                                           id="loginEmail"
+                                           name="loginEmail"
+                                           class="form-control"
+                                           value="<%= formData.loginEmail || '' %>"
+                                           placeholder="doctor@example.com">
+                                    <div class="form-text" style="font-size:12px;color:#9ca3af;">The doctor will use this to log in.</div>
+                                </div>
+
+                                <!-- Login Password -->
+                                <div class="col-md-6">
+                                    <label class="form-label" for="loginPassword">
+                                        <i class="fas fa-key me-1" style="color:#0d9488;"></i>
+                                        Password
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="password"
+                                               id="loginPassword"
+                                               name="loginPassword"
+                                               class="form-control"
+                                               placeholder="Min 6 characters"
+                                               minlength="6">
+                                        <button class="btn btn-outline-secondary" type="button"
+                                                onclick="(function(){var f=document.getElementById('loginPassword');f.type=f.type==='password'?'text':'password';})()"
+                                                style="border:1.5px solid #e5e7eb;border-left:none;background:#f9fafb;font-size:13px;">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <div class="form-text" style="font-size:12px;color:#9ca3af;">Minimum 6 characters.</div>
                                 </div>
 
                             </div><!-- /row -->

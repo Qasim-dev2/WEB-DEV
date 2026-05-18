@@ -76,6 +76,14 @@ const doctorSchema = new mongoose.Schema(
             required: [true, 'Description is required'],
             trim: true,
         },
+
+        // Linked user account (optional — set when doctor has a login)
+        user: {
+            type    : mongoose.Schema.Types.ObjectId,
+            ref     : 'User',
+            default : null,
+            sparse  : true,
+        },
     },
     {
         // Automatically adds createdAt and updatedAt timestamps

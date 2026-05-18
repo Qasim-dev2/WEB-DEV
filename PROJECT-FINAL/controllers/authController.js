@@ -35,7 +35,7 @@ exports.postRegister = async (req, res) => {
             name    : name.trim(),
             email   : email.toLowerCase().trim(),
             password,
-            role    : 'customer',
+            role    : 'patient',
         });
 
         req.session.user = { _id: user._id, name: user.name, email: user.email, role: user.role };
@@ -80,7 +80,7 @@ exports.postLogin = async (req, res) => {
 
         req.flash('success', `Welcome back, ${user.name}!`);
 
-        const roleHome = { admin: '/admin', doctor: '/doctor/dashboard', customer: '/patient/dashboard' };
+        const roleHome = { admin: '/admin', doctor: '/doctor/dashboard', patient: '/patient/dashboard', customer: '/patient/dashboard' };
         const returnTo = req.session.returnTo || roleHome[user.role] || '/';
         delete req.session.returnTo;
         res.redirect(returnTo);

@@ -186,7 +186,7 @@
             <div class="stat-card p-3 d-flex align-items-center gap-3">
                 <div class="stat-icon si-purple"><i class="fas fa-calendar-check"></i></div>
                 <div>
-                    <div class="fw-bold fs-5 lh-1">0</div>
+                    <div class="fw-bold fs-5 lh-1"><%= totalMyAppointments || 0 %></div>
                     <div class="text-muted" style="font-size:.75rem;">Appointments</div>
                 </div>
             </div>
@@ -212,15 +212,83 @@
 
             <!-- Upcoming Appointments -->
             <div class="mb-4">
-                <p class="section-title mb-3"><i class="fas fa-calendar-alt text-teal"></i> Upcoming Appointments</p>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <p class="section-title mb-0"><i class="fas fa-calendar-alt text-teal"></i> My Appointments</p>
+                    <a href="/appointments/book" class="btn btn-sm px-3 rounded-pill fw-semibold text-white" style="background:var(--patient-primary);font-size:.8rem;">
+                        <i class="fas fa-calendar-plus me-1"></i>Book New
+                    </a>
+                </div>
+
+                <% if (myAppointments && myAppointments.length > 0) { %>
+                <div class="d-flex flex-column gap-3">
+                    <% myAppointments.forEach(appt => { %>
+                    <div class="card border-0 shadow-sm rounded-3 p-0 overflow-hidden">
+                        <div class="d-flex">
+                            <!-- Status stripe -->
+                            <div style="width:5px;flex-shrink:0;background:<%= appt.status === 'approved' ? '#059669' : appt.status === 'pending' ? '#d97706' : appt.status === 'completed' ? '#0d9488' : appt.status === 'rejected' ? '#dc2626' : '#9ca3af' %>"></div>
+                            <div class="p-3 flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <% if (appt.doctor) { %>
+                                        <%
+                                          const dImg2 = appt.doctor.image && appt.doctor.image.trim()
+                                            ? (appt.doctor.image.startsWith('http') ? appt.doctor.image : '/uploads/doctors/' + appt.doctor.image)
+                                            : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(appt.doctor.name) + '&background=0d9488&color=fff';
+                                        %>
+                                        <img src="<%= dImg2 %>" alt="<%= appt.doctor.name %>"
+                                             style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #e5e7eb"
+                                             onerror="this.src='https://ui-avatars.com/api/?name=<%= encodeURIComponent(appt.doctor.name) %>&background=0d9488&color=fff'">
+                                        <div>
+                                            <div class="fw-semibold" style="font-size:.9rem"><%= appt.doctor.name %></div>
+                                            <div class="text-muted" style="font-size:.77rem"><%= appt.doctor.category %></div>
+                                        </div>
+                                        <% } else { %>
+                                        <div class="text-muted small">Doctor info unavailable</div>
+                                        <% } %>
+                                    </div>
+                                    <!-- Status badge -->
+                                    <span style="font-size:.72rem;padding:.3em .8em;border-radius:20px;font-weight:600;
+                                      background:<%= appt.status === 'approved' ? '#d1fae5' : appt.status === 'pending' ? '#fef3c7' : appt.status === 'completed' ? '#ccfbf1' : appt.status === 'rejected' ? '#fee2e2' : '#f3f4f6' %>;
+                                      color:<%= appt.status === 'approved' ? '#065f46' : appt.status === 'pending' ? '#92400e' : appt.status === 'completed' ? '#134e4a' : appt.status === 'rejected' ? '#991b1b' : '#374151' %>">
+                                        <%= appt.status.charAt(0).toUpperCase() + appt.status.slice(1) %>
+                                    </span>
+                                </div>
+                                <!-- Date + actions -->
+                                <div class="d-flex justify-content-between align-items-center mt-2 flex-wrap gap-2">
+                                    <div class="text-muted" style="font-size:.78rem">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        <% if (appt.appointmentDate) { %>
+                                          <%= new Date(appt.appointmentDate).toLocaleDateString('en-PK', {weekday:'short', day:'2-digit', month:'short', year:'numeric'}) %>
+                                          at <%= new Date(appt.appointmentDate).toLocaleTimeString('en-PK', {hour:'2-digit',minute:'2-digit'}) %>
+                                        <% } else { %>—<% } %>
+                                        &nbsp;·&nbsp;<i class="fas fa-phone me-1"></i><%= appt.phone %>
+                                    </div>
+                                    <!-- Cancel button for pending/approved only -->
+                                    <% if (appt.status === 'pending' || appt.status === 'approved') { %>
+                                    <form action="/appointments/<%= appt._id %>/cancel" method="POST" onsubmit="return confirm('Cancel this appointment?')">
+                                        <button type="submit" class="btn btn-sm px-3 rounded-pill"
+                                          style="font-size:.75rem;border:1px solid #fca5a5;color:#dc2626;background:#fff5f5">
+                                            <i class="fas fa-times me-1"></i>Cancel
+                                        </button>
+                                    </form>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+                </div>
+
+                <% } else { %>
                 <div class="appt-empty text-center py-5 px-4">
                     <div style="font-size:3rem; opacity:.35;"><i class="fas fa-calendar-plus"></i></div>
                     <h6 class="fw-semibold text-muted mt-3 mb-1">No Appointments Yet</h6>
                     <p class="text-muted small mb-3">Browse our specialists and schedule your first consultation.</p>
-                    <a href="/doctors" class="btn btn-sm px-4 rounded-pill fw-semibold text-white" style="background:var(--patient-primary);">
-                        <i class="fas fa-search me-1"></i> Browse Doctors
+                    <a href="/appointments/book" class="btn btn-sm px-4 rounded-pill fw-semibold text-white" style="background:var(--patient-primary);">
+                        <i class="fas fa-calendar-plus me-1"></i>Book Appointment
                     </a>
                 </div>
+                <% } %>
             </div>
 
             <!-- Available Doctors -->
@@ -316,14 +384,14 @@
             <div class="stat-card p-4 mb-4">
                 <p class="section-title mb-3 fs-6"><i class="fas fa-bolt text-teal"></i> Quick Actions</p>
                 <div class="d-flex flex-column gap-2">
+                    <a href="/appointments/book" class="qa-btn qa-btn-teal">
+                        <i class="fas fa-calendar-plus"></i> Book Appointment
+                    </a>
                     <a href="/doctors" class="qa-btn qa-btn-teal">
                         <i class="fas fa-search"></i> Find Specialists
                     </a>
                     <a href="/doctors?sort=rating" class="qa-btn qa-btn-teal">
                         <i class="fas fa-star"></i> Top Rated Doctors
-                    </a>
-                    <a href="/doctors?availability=Available" class="qa-btn qa-btn-teal">
-                        <i class="fas fa-calendar-check"></i> Available Now
                     </a>
                     <a href="/profile" class="qa-btn qa-btn-teal">
                         <i class="fas fa-id-card"></i> My Profile
