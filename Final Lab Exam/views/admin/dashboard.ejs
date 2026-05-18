@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Multisensa Admin</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <!-- Admin CSS -->
+    <link href="/css/admin.css" rel="stylesheet">
+</head>
+<body class="admin-body">
+
+<%- include('partials/sidebar', { activePage: 'dashboard' }) %>
+
+<!-- ═══════════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════════ -->
+<div class="admin-main">
+
+    <!-- ── Top Bar ── -->
+    <div class="admin-topbar">
+        <div class="topbar-left">
+            <button class="sidebar-toggle-btn" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="topbar-page-title">
+                <h4><i class="fas fa-tachometer-alt me-2" style="color:#0d9488;"></i>Dashboard</h4>
+                <small>Welcome back, Admin</small>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <span class="admin-role-badge"><i class="fas fa-shield-alt me-1"></i>Admin</span>
+            <a href="/doctors" class="btn-view-site">
+                <i class="fas fa-eye"></i> View Site
+            </a>
+        </div>
+    </div>
+
+    <!-- ── Page Content ── -->
+    <div class="admin-content">
+
+        <!-- Flash Messages -->
+        <% if (success && success.length > 0) { %>
+        <div class="flash-success alert-dismissible fade show mb-4" role="alert">
+            <i class="fas fa-check-circle"></i> <%= success[0] %>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" style="border:none;background:none;font-size:16px;color:inherit;cursor:pointer;">×</button>
+        </div>
+        <% } %>
+        <% if (error && error.length > 0) { %>
+        <div class="flash-error alert-dismissible fade show mb-4" role="alert">
+            <i class="fas fa-exclamation-circle"></i> <%= error[0] %>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" style="border:none;background:none;font-size:16px;color:inherit;cursor:pointer;">×</button>
+        </div>
+        <% } %>
+
+        <!-- Page Heading -->
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h4 class="fw-bold mb-1" style="color:#1a3a3c;">Overview</h4>
+                <p class="text-muted mb-0" style="font-size:13px;">
+                    <i class="fas fa-calendar-alt me-1"></i>
+                    <%= new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' }) %>
+                </p>
+            </div>
+            <a href="/admin/doctors/new" class="btn-admin-primary">
+                <i class="fas fa-plus"></i> Add Doctor
+            </a>
+        </div>
+
+        <!-- ── Stats Cards Row ── -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-xl-3 col-sm-6">
+                <div class="stat-card teal">
+                    <div class="stat-icon teal">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="stat-body">
+                        <h3><%= totalDoctors %></h3>
+                        <p>Total Doctors</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6">
+                <div class="stat-card blue">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <div class="stat-body">
+                        <h3><%= totalCategories %></h3>
+                        <p>Specializations Active</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6">
+                <div class="stat-card amber">
+                    <div class="stat-icon amber">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stat-body">
+                        <h3>PKR&nbsp;<%= avgCharges.toLocaleString() %></h3>
+                        <p>Avg. Consultation Fee</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6">
+                <div class="stat-card purple">
+                    <div class="stat-icon purple">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-body">
+                        <h3><%= avgRating %> <span style="font-size:16px;font-weight:500;opacity:.7">/ 5</span></h3>
+                        <p>Avg. Patient Rating</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ── Appointment Stats Row ── -->
+        <div class="row g-3 mb-4">
+            <div class="col-12">
+                <div class="admin-card" style="padding:0">
+                    <div class="admin-card-header">
+                        <h5><i class="fas fa-calendar-check me-2" style="color:#0d9488"></i>Appointments Overview</h5>
+                        <a href="/admin/appointments" class="btn-action btn-view">View All <i class="fas fa-arrow-right ms-1"></i></a>
+                    </div>
+                    <div class="row g-0 text-center border-top">
+                        <div class="col border-end py-3">
+                            <div class="fw-bold fs-4"><%= totalAppointments %></div>
+                            <div class="text-muted small">Total</div>
+                        </div>
+                        <div class="col border-end py-3">
+                            <div class="fw-bold fs-4 text-warning"><%= pendingCount %></div>
+                            <div class="text-muted small">Pending</div>
+                        </div>
+                        <div class="col border-end py-3">
+                            <div class="fw-bold fs-4 text-success"><%= approvedCount %></div>
+                            <div class="text-muted small">Approved</div>
+                        </div>
+                        <div class="col py-3">
+                            <div class="fw-bold fs-4" style="color:#0d9488"><%= completedCount %></div>
+                            <div class="text-muted small">Completed</div>
+                        </div>
+                    </div>
+                    <% if (recentAppointments && recentAppointments.length > 0) { %>
+                    <div class="table-responsive border-top">
+                        <table class="table admin-table mb-0" style="font-size:.85rem">
+                            <thead><tr><th>Patient</th><th>Specialist</th><th>Date</th><th>Status</th></tr></thead>
+                            <tbody>
+                                <% recentAppointments.forEach(appt => { %>
+                                <tr>
+                                    <td><%= appt.patient ? appt.patient.name : '—' %></td>
+                                    <td><%= appt.doctor  ? appt.doctor.name  : '—' %></td>
+                                    <td><%= appt.appointmentDate ? new Date(appt.appointmentDate).toLocaleDateString('en-PK', {day:'2-digit',month:'short',year:'numeric'}) : '—' %></td>
+                                    <td>
+                                        <span class="badge" style="<%= appt.status === 'pending' ? 'background:#fef3c7;color:#92400e' : appt.status === 'approved' ? 'background:#d1fae5;color:#065f46' : appt.status === 'completed' ? 'background:#ccfbf1;color:#134e4a' : 'background:#f3f4f6;color:#374151' %>; font-size:.72rem; padding:.3em .65em; border-radius:20px;">
+                                            <%= appt.status.charAt(0).toUpperCase() + appt.status.slice(1) %>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Lower Row ── -->
+        <div class="row g-3">
+
+            <!-- Recent Doctors Table -->
+            <div class="col-xl-8">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h5><i class="fas fa-clock me-2" style="color:#0d9488;"></i>Recently Added Doctors</h5>
+                        <a href="/admin/doctors" class="btn-action btn-view">
+                            View All <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+
+                    <% if (recentDoctors.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table admin-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Doctor</th>
+                                    <th>Specialization</th>
+                                    <th>Charges</th>
+                                    <th>Rating</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% recentDoctors.forEach(doc => { %>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <img
+                                                src="<%= doc.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name)}&background=0d9488&color=fff&size=80&bold=true&rounded=true` %>"
+                                                class="doctor-thumb"
+                                                alt="<%= doc.name %>"
+                                                onerror="this.src='https://ui-avatars.com/api/?name=<%= encodeURIComponent(doc.name) %>&background=0d9488&color=fff&size=80&bold=true&rounded=true'">
+                                            <div>
+                                                <div style="font-weight:600;color:#1a3a3c;font-size:14px;"><%= doc.name %></div>
+                                                <div style="font-size:12px;color:#9ca3af;"><%= doc.qualification %></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-category px-2 py-1" style="font-size:11px;border-radius:6px;">
+                                            <%= doc.category %>
+                                        </span>
+                                    </td>
+                                    <td style="font-weight:600;color:#1a3a3c;">PKR&nbsp;<%= doc.charges.toLocaleString() %></td>
+                                    <td>
+                                        <span class="badge badge-rating px-2 py-1" style="font-size:12px;border-radius:6px;">
+                                            <i class="fas fa-star me-1" style="color:#f59e0b;font-size:10px;"></i><%= doc.rating %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <% if (doc.availability === 'Available') { %>
+                                            <span class="badge badge-available px-2 py-1" style="font-size:11px;border-radius:6px;">Available</span>
+                                        <% } else if (doc.availability === 'Limited Slots') { %>
+                                            <span class="badge badge-limited px-2 py-1" style="font-size:11px;border-radius:6px;">Limited</span>
+                                        <% } else { %>
+                                            <span class="badge badge-booked px-2 py-1" style="font-size:11px;border-radius:6px;">Fully Booked</span>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <a href="/admin/doctors/<%= doc._id %>/edit" class="btn-action btn-edit">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <% } else { %>
+                    <div class="empty-state">
+                        <i class="fas fa-user-md"></i>
+                        <h5>No doctors yet</h5>
+                        <p>Start by adding your first specialist to the system.</p>
+                        <a href="/admin/doctors/new" class="btn-admin-primary">
+                            <i class="fas fa-plus"></i> Add First Doctor
+                        </a>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-xl-4">
+
+                <!-- Category Distribution -->
+                <div class="admin-card mb-3">
+                    <div class="admin-card-header">
+                        <h5><i class="fas fa-chart-bar me-2" style="color:#0d9488;"></i>By Specialization</h5>
+                    </div>
+                    <div style="padding:20px;">
+                        <% if (categoryStats.length > 0) { %>
+                            <%
+                                const catColors = {
+                                    'Physiotherapist'        : '#0d9488',
+                                    'Psychologist'           : '#8b5cf6',
+                                    'Orthopedic Specialist'  : '#3b82f6',
+                                    'Neurologist'            : '#ef4444',
+                                    'Occupational Therapist' : '#f59e0b',
+                                    'Speech Therapist'       : '#10b981',
+                                    'Rehabilitation Consultant': '#6366f1',
+                                };
+                            %>
+                            <% categoryStats.forEach(cat => { %>
+                            <div class="cat-item">
+                                <div class="cat-item-header">
+                                    <span><%= cat._id %></span>
+                                    <span style="color:#6b7280;"><%= cat.count %> dr<%= cat.count !== 1 ? 's' : '' %></span>
+                                </div>
+                                <div class="cat-item-bar">
+                                    <div class="cat-item-fill"
+                                         style="width:<%= totalDoctors > 0 ? Math.round((cat.count / totalDoctors) * 100) : 0 %>%;background:<%= catColors[cat._id] || '#0d9488' %>;">
+                                    </div>
+                                </div>
+                            </div>
+                            <% }) %>
+                        <% } else { %>
+                            <p class="text-muted text-center py-3" style="font-size:13px;">No data available yet.</p>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h5><i class="fas fa-bolt me-2" style="color:#0d9488;"></i>Quick Actions</h5>
+                    </div>
+                    <div style="padding:16px;display:flex;flex-direction:column;gap:8px;">
+                        <a href="/admin/appointments"
+                           class="quick-action-link"
+                           style="background:#f0fdf9;color:#065f46;">
+                            <i class="fas fa-calendar-check" style="color:#0d9488;width:18px;"></i>
+                            Manage Appointments
+                        </a>
+                        <a href="/admin/doctors/new"
+                           class="quick-action-link"
+                           style="background:#f0fdf9;color:#065f46;">
+                            <i class="fas fa-user-plus" style="color:#0d9488;width:18px;"></i>
+                            Add New Doctor
+                        </a>
+                        <a href="/admin/doctors"
+                           class="quick-action-link"
+                           style="background:#eff6ff;color:#1e40af;">
+                            <i class="fas fa-list" style="color:#3b82f6;width:18px;"></i>
+                            Manage All Doctors
+                        </a>
+                        <a href="/doctors"
+                           class="quick-action-link"
+                           style="background:#faf5ff;color:#581c87;">
+                            <i class="fas fa-external-link-alt" style="color:#8b5cf6;width:18px;"></i>
+                            View Specialists Page
+                        </a>
+                        <a href="/"
+                           class="quick-action-link"
+                           style="background:#fff7ed;color:#9a3412;">
+                            <i class="fas fa-home" style="color:#f97316;width:18px;"></i>
+                            View Home Page
+                        </a>
+                    </div>
+                </div>
+
+            </div><!-- /col-xl-4 -->
+
+        </div><!-- /row -->
+
+    </div><!-- /admin-content -->
+</div><!-- /admin-main -->
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ── Mobile Sidebar Toggle ──────────────────────────────
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const sidebar   = document.getElementById('adminSidebar');
+    const overlay   = document.getElementById('sidebarOverlay');
+
+    toggleBtn?.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+    });
+
+    overlay?.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+    });
+
+    // ── Auto-dismiss flash messages after 5s ──────────────
+    setTimeout(() => {
+        document.querySelectorAll('.flash-success, .flash-error').forEach(el => {
+            el.style.transition = 'opacity 0.5s';
+            el.style.opacity = '0';
+            setTimeout(() => el.remove(), 500);
+        });
+    }, 5000);
+</script>
+
+</body>
+</html>

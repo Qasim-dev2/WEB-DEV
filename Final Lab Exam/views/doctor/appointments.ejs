@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>My Appointments — Multisensa Doctor</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="stylesheet" href="/css/style.css"/>
+    <style>
+        :root { --doc-primary:#1e40af; --doc-accent:#3b82f6; --doc-light:#eff6ff; }
+        body { background:#f0f4ff; font-family:'Segoe UI',sans-serif; }
+        .page-hero { background:linear-gradient(135deg,#1e3a8a,#1e40af 60%,#3b82f6); color:#fff; padding:2.5rem 0 3rem; border-radius:0 0 32px 32px; }
+        .filter-bar { background:#fff; border-radius:14px; padding:1rem 1.5rem; box-shadow:0 2px 12px rgba(30,64,175,.07); margin-bottom:1.5rem; }
+        .appt-card { background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:1.25rem 1.5rem; transition:all .2s; }
+        .appt-card:hover { border-color:var(--doc-accent); box-shadow:0 4px 18px rgba(59,130,246,.12); }
+        .patient-avatar { width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--doc-primary),var(--doc-accent));color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+        .badge-status { display:inline-block;padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:600; }
+        .bs-pending   { background:#fef9c3;color:#854d0e; }
+        .bs-approved  { background:#dcfce7;color:#15803d; }
+        .bs-completed { background:#cffafe;color:#0e7490; }
+        .bs-rejected  { background:#ffe4e6;color:#be123c; }
+        .bs-cancelled { background:#f1f5f9;color:#64748b; }
+        .stat-pill { background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:.6rem 1.1rem;text-align:center;min-width:100px; }
+        .filter-btn.active { background:var(--doc-primary)!important;color:#fff!important;border-color:var(--doc-primary)!important; }
+    </style>
+</head>
+<body>
+
+<%- include('../partials/navbar') %>
+<%- include('../partials/flash') %>
+
+<!-- HERO -->
+<div class="page-hero">
+    <div class="container">
+        <div class="d-flex align-items-center gap-3">
+            <div style="width:56px;height:56px;background:rgba(255,255,255,.15);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div>
+                <h1 class="fw-bold mb-0 fs-4">My Appointments</h1>
+                <p class="mb-0 opacity-75 small">All patient appointments assigned to you</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-4">
+
+    <!-- Status summary pills -->
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <div class="stat-pill"><div class="fw-bold fs-6 lh-1 text-warning"><%= statusCounts.pending || 0 %></div><div class="text-muted" style="font-size:.72rem;">Pending</div></div>
+        <div class="stat-pill"><div class="fw-bold fs-6 lh-1 text-success"><%= statusCounts.approved || 0 %></div><div class="text-muted" style="font-size:.72rem;">Approved</div></div>
+        <div class="stat-pill"><div class="fw-bold fs-6 lh-1 text-info"><%= statusCounts.completed || 0 %></div><div class="text-muted" style="font-size:.72rem;">Completed</div></div>
+        <div class="stat-pill"><div class="fw-bold fs-6 lh-1 text-danger"><%= statusCounts.rejected || 0 %></div><div class="text-muted" style="font-size:.72rem;">Rejected</div></div>
+        <div class="stat-pill"><div class="fw-bold fs-6 lh-1 text-secondary"><%= statusCounts.cancelled || 0 %></div><div class="text-muted" style="font-size:.72rem;">Cancelled</div></div>
+        <div class="stat-pill ms-auto"><div class="fw-bold fs-6 lh-1" style="color:var(--doc-primary);"><%= total %></div><div class="text-muted" style="font-size:.72rem;">Total</div></div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar d-flex align-items-center gap-2 flex-wrap">
+        <span class="fw-semibold me-1" style="font-size:.88rem;">Filter:</span>
+        <a href="/doctor/appointments" class="btn btn-sm rounded-pill filter-btn <%= !selectedStatus ? 'active' : 'btn-outline-secondary' %>" style="font-size:.8rem;">All</a>
+        <a href="/doctor/appointments?status=pending"   class="btn btn-sm rounded-pill filter-btn <%= selectedStatus==='pending'   ? 'active' : 'btn-outline-warning' %>"  style="font-size:.8rem;">Pending</a>
+        <a href="/doctor/appointments?status=approved"  class="btn btn-sm rounded-pill filter-btn <%= selectedStatus==='approved'  ? 'active' : 'btn-outline-success' %>"  style="font-size:.8rem;">Approved</a>
+        <a href="/doctor/appointments?status=completed" class="btn btn-sm rounded-pill filter-btn <%= selectedStatus==='completed' ? 'active' : 'btn-outline-info' %>"     style="font-size:.8rem;">Completed</a>
+        <a href="/doctor/appointments?status=rejected"  class="btn btn-sm rounded-pill filter-btn <%= selectedStatus==='rejected'  ? 'active' : 'btn-outline-danger' %>"   style="font-size:.8rem;">Rejected</a>
+        <a href="/doctor/appointments?status=cancelled" class="btn btn-sm rounded-pill filter-btn <%= selectedStatus==='cancelled' ? 'active' : 'btn-outline-secondary' %>" style="font-size:.8rem;">Cancelled</a>
+    </div>
+
+    <!-- Appointments list -->
+    <% if (appointments.length === 0) { %>
+    <div class="text-center py-5 rounded-3" style="background:#fff;border:2px dashed #bfdbfe;">
+        <div style="font-size:3rem;opacity:.3;"><i class="fas fa-calendar-xmark"></i></div>
+        <p class="text-muted mt-2 mb-3">No appointments found<% if (selectedStatus) { %> with status "<%= selectedStatus %>"<% } %></p>
+        <a href="/doctor/appointments" class="btn btn-sm rounded-pill px-4" style="background:var(--doc-light);color:var(--doc-primary);border:1px solid #bfdbfe;">View All</a>
+    </div>
+    <% } else { %>
+    <div class="d-flex flex-column gap-3">
+        <% appointments.forEach(appt => { %>
+        <div class="appt-card">
+            <div class="d-flex align-items-start gap-3 flex-wrap">
+                <div class="patient-avatar"><%= appt.patient ? appt.patient.name.charAt(0).toUpperCase() : '?' %></div>
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                        <span class="fw-semibold" style="font-size:.95rem;"><%= appt.patient ? appt.patient.name : 'Unknown Patient' %></span>
+                        <span class="badge-status bs-<%= appt.status %>"><%= appt.status.charAt(0).toUpperCase() + appt.status.slice(1) %></span>
+                    </div>
+                    <div class="d-flex flex-wrap gap-3" style="font-size:.8rem;color:#64748b;">
+                        <span><i class="fas fa-envelope me-1"></i><%= appt.patient ? appt.patient.email : 'N/A' %></span>
+                        <span><i class="fas fa-phone me-1"></i><%= appt.phone %></span>
+                        <span><i class="fas fa-calendar me-1"></i><%= new Date(appt.appointmentDate).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) %></span>
+                        <span><i class="fas fa-clock me-1"></i><%= appt.appointmentTime %></span>
+                    </div>
+                    <% if (appt.symptoms) { %>
+                    <div class="mt-2 p-2 rounded-2" style="background:#f8fafc;font-size:.8rem;color:#374151;border-left:3px solid var(--doc-accent);">
+                        <strong>Symptoms:</strong> <%= appt.symptoms %>
+                    </div>
+                    <% } %>
+                    <% if (appt.notes) { %>
+                    <div class="mt-1" style="font-size:.78rem;color:#64748b;"><i class="fas fa-sticky-note me-1"></i><%= appt.notes %></div>
+                    <% } %>
+                    <% if (appt.adminNotes) { %>
+                    <div class="mt-1 p-2 rounded-2" style="background:#f0fdf4;font-size:.78rem;color:#15803d;border-left:3px solid #22c55e;">
+                        <i class="fas fa-comment-medical me-1"></i><strong>Admin note:</strong> <%= appt.adminNotes %>
+                    </div>
+                    <% } %>
+                </div>
+                <div class="d-flex flex-column align-items-end gap-2 flex-shrink-0">
+                    <div class="text-muted" style="font-size:.75rem;">
+                        Booked <%= new Date(appt.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}) %>
+                    </div>
+                    <!-- Status change buttons -->
+                    <div class="d-flex gap-1 flex-wrap justify-content-end">
+                        <% if (appt.status === 'pending') { %>
+                        <form action="/doctor/appointments/<%= appt._id %>/status" method="POST" style="display:inline;">
+                            <input type="hidden" name="status" value="approved">
+                            <button type="submit" class="btn btn-sm" style="background:#dcfce7;color:#15803d;border:1px solid #bbf7d0;border-radius:8px;font-size:.72rem;font-weight:600;padding:3px 10px;">
+                                <i class="fas fa-check me-1"></i>Approve
+                            </button>
+                        </form>
+                        <form action="/doctor/appointments/<%= appt._id %>/status" method="POST" style="display:inline;">
+                            <input type="hidden" name="status" value="rejected">
+                            <button type="submit" class="btn btn-sm" style="background:#ffe4e6;color:#be123c;border:1px solid #fecdd3;border-radius:8px;font-size:.72rem;font-weight:600;padding:3px 10px;">
+                                <i class="fas fa-times me-1"></i>Reject
+                            </button>
+                        </form>
+                        <% } else if (appt.status === 'approved') { %>
+                        <form action="/doctor/appointments/<%= appt._id %>/status" method="POST" style="display:inline;">
+                            <input type="hidden" name="status" value="completed">
+                            <button type="submit" class="btn btn-sm" style="background:#cffafe;color:#0e7490;border:1px solid #a5f3fc;border-radius:8px;font-size:.72rem;font-weight:600;padding:3px 10px;">
+                                <i class="fas fa-flag-checkered me-1"></i>Complete
+                            </button>
+                        </form>
+                        <form action="/doctor/appointments/<%= appt._id %>/status" method="POST" style="display:inline;">
+                            <input type="hidden" name="status" value="rejected">
+                            <button type="submit" class="btn btn-sm" style="background:#ffe4e6;color:#be123c;border:1px solid #fecdd3;border-radius:8px;font-size:.72rem;font-weight:600;padding:3px 10px;">
+                                <i class="fas fa-times me-1"></i>Reject
+                            </button>
+                        </form>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+
+    <!-- Pagination -->
+    <% if (totalPages > 1) { %>
+    <nav class="mt-4 d-flex justify-content-center">
+        <ul class="pagination pagination-sm gap-1">
+            <li class="page-item <%= currentPage <= 1 ? 'disabled' : '' %>">
+                <a class="page-link rounded-pill" href="/doctor/appointments?status=<%= selectedStatus %>&page=<%= currentPage - 1 %>"><i class="fas fa-chevron-left"></i></a>
+            </li>
+            <% for (let p = 1; p <= totalPages; p++) { %>
+            <li class="page-item <%= p === currentPage ? 'active' : '' %>">
+                <a class="page-link rounded-pill" href="/doctor/appointments?status=<%= selectedStatus %>&page=<%= p %>"
+                   style="<%= p === currentPage ? 'background:var(--doc-primary);border-color:var(--doc-primary);' : '' %>"><%= p %></a>
+            </li>
+            <% } %>
+            <li class="page-item <%= currentPage >= totalPages ? 'disabled' : '' %>">
+                <a class="page-link rounded-pill" href="/doctor/appointments?status=<%= selectedStatus %>&page=<%= currentPage + 1 %>"><i class="fas fa-chevron-right"></i></a>
+            </li>
+        </ul>
+    </nav>
+    <% } %>
+    <% } %>
+</div>
+
+<footer class="text-center py-4" style="background:#fff;border-top:1px solid #e2e8f0;">
+    <p class="mb-0 text-muted small">&copy; <%= new Date().getFullYear() %> Multisensa Rehabilitation Center.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

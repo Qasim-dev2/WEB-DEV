@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appointments — Multisensa Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <link href="/css/admin.css" rel="stylesheet">
+  <style>
+    .status-badge { font-size: .75rem; padding: .3em .7em; border-radius: 20px; font-weight: 600; letter-spacing: .3px; }
+    .status-pending   { background: #fef3c7; color: #92400e; }
+    .status-approved  { background: #d1fae5; color: #065f46; }
+    .status-rejected  { background: #fee2e2; color: #991b1b; }
+    .status-completed { background: #ccfbf1; color: #134e4a; }
+    .status-cancelled { background: #f3f4f6; color: #374151; }
+    .filter-pill {
+      display: inline-flex; align-items: center; gap: .4rem;
+      padding: .4rem 1rem; border-radius: 20px; font-size: .82rem;
+      font-weight: 600; text-decoration: none; border: 2px solid transparent;
+      transition: all .15s;
+    }
+    .filter-pill.active, .filter-pill:hover { border-color: #0d9488; background: #f0fdfa; color: #0d9488; }
+    .filter-pill:not(.active) { color: #6b7280; background: #f9fafb; border-color: #e5e7eb; }
+    .count-chip {
+      background: #0d9488; color: #fff;
+      border-radius: 20px; padding: .1em .5em;
+      font-size: .7rem;
+    }
+    .count-chip.yellow { background: #d97706; }
+    .count-chip.red    { background: #dc2626; }
+    .count-chip.green  { background: #059669; }
+    .count-chip.teal   { background: #0d9488; }
+    .count-chip.grey   { background: #9ca3af; }
+    .appt-row:hover { background: #f8f9fa; }
+    .doctor-mini { font-size: .8rem; color: #0d9488; }
+  </style>
+</head>
+<body class="admin-body">
+
+<%- include('partials/sidebar', { activePage: 'appointments' }) %>
+
+<div class="admin-main">
+
+  <!-- ── Top Bar ── -->
+  <div class="admin-topbar">
+    <div class="topbar-left">
+      <button class="sidebar-toggle-btn" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+      <div class="topbar-page-title">
+        <h4><i class="fas fa-calendar-check me-2" style="color:#0d9488"></i>Appointments</h4>
+        <small><%= totalFiltered %> appointment<%= totalFiltered !== 1 ? 's' : '' %> found</small>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="admin-role-badge"><i class="fas fa-shield-alt me-1"></i>Admin</span>
+      <a href="/admin/appointments/new" class="btn btn-sm ms-2" style="background:#0d9488;color:#fff;border-radius:8px;padding:.4rem .9rem;font-size:.82rem;font-weight:600;">
+        <i class="fas fa-plus me-1"></i>New Appointment
+      </a>
+    </div>
+  </div>
+
+  <div class="admin-content">
+
+    <!-- Flash -->
+    <% if (success && success.length > 0) { %>
+    <div class="alert alert-success alert-dismissible fade show border-0 rounded-3 mb-4" role="alert">
+      <i class="fas fa-check-circle me-2"></i><%= success[0] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <% } %>
+    <% if (error && error.length > 0) { %>
+    <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 mb-4" role="alert">
+      <i class="fas fa-exclamation-circle me-2"></i><%= error[0] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <% } %>
+
+    <!-- ── Summary Counts ── -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-2">
+        <div class="card border-0 shadow-sm rounded-3 text-center py-3">
+          <div class="fw-bold fs-4"><%= counts.total %></div>
+          <div class="text-muted small">Total</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="card border-0 shadow-sm rounded-3 text-center py-3" style="border-left:3px solid #d97706!important">
+          <div class="fw-bold fs-4 text-warning"><%= counts.pending %></div>
+          <div class="text-muted small">Pending</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="card border-0 shadow-sm rounded-3 text-center py-3" style="border-left:3px solid #059669!important">
+          <div class="fw-bold fs-4 text-success"><%= counts.approved %></div>
+          <div class="text-muted small">Approved</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="card border-0 shadow-sm rounded-3 text-center py-3" style="border-left:3px solid #dc2626!important">
+          <div class="fw-bold fs-4 text-danger"><%= counts.rejected %></div>
+          <div class="text-muted small">Rejected</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="card border-0 shadow-sm rounded-3 text-center py-3" style="border-left:3px solid #0d9488!important">
+          <div class="fw-bold fs-4 text-teal"><%= counts.completed %></div>
+          <div class="text-muted small">Completed</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="card border-0 shadow-sm rounded-3 text-center py-3">
+          <div class="fw-bold fs-4 text-secondary"><%= counts.cancelled %></div>
+          <div class="text-muted small">Cancelled</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Filters ── -->
+    <div class="card border-0 shadow-sm rounded-3 mb-4">
+      <div class="card-body py-3 px-4">
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+          <span class="text-muted small me-1 fw-semibold">Filter:</span>
+          <a href="/admin/appointments" class="filter-pill <%= !statusFilter ? 'active' : '' %>">
+            All <span class="count-chip"><%= counts.total %></span>
+          </a>
+          <a href="/admin/appointments?status=pending" class="filter-pill <%= statusFilter === 'pending' ? 'active' : '' %>">
+            Pending <span class="count-chip yellow"><%= counts.pending %></span>
+          </a>
+          <a href="/admin/appointments?status=approved" class="filter-pill <%= statusFilter === 'approved' ? 'active' : '' %>">
+            Approved <span class="count-chip green"><%= counts.approved %></span>
+          </a>
+          <a href="/admin/appointments?status=rejected" class="filter-pill <%= statusFilter === 'rejected' ? 'active' : '' %>">
+            Rejected <span class="count-chip red"><%= counts.rejected %></span>
+          </a>
+          <a href="/admin/appointments?status=completed" class="filter-pill <%= statusFilter === 'completed' ? 'active' : '' %>">
+            Completed <span class="count-chip teal"><%= counts.completed %></span>
+          </a>
+          <a href="/admin/appointments?status=cancelled" class="filter-pill <%= statusFilter === 'cancelled' ? 'active' : '' %>">
+            Cancelled <span class="count-chip grey"><%= counts.cancelled %></span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Table ── -->
+    <div class="card border-0 shadow-sm rounded-3">
+      <div class="card-body p-0">
+        <% if (appointments.length === 0) { %>
+        <div class="text-center py-5">
+          <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+          <h5 class="text-muted">No appointments found</h5>
+          <p class="text-muted small">Try changing the filter or wait for patients to book.</p>
+        </div>
+        <% } else { %>
+        <div class="table-responsive">
+          <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+              <tr>
+                <th class="px-4 py-3">#</th>
+                <th class="py-3">Patient</th>
+                <th class="py-3">Specialist</th>
+                <th class="py-3">Date & Time</th>
+                <th class="py-3">Phone</th>
+                <th class="py-3">Status</th>
+                <th class="py-3 text-end px-4">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% appointments.forEach((appt, i) => { %>
+              <tr class="appt-row">
+                <td class="px-4 text-muted small"><%= (currentPage - 1) * 15 + i + 1 %></td>
+                <td>
+                  <div class="fw-semibold small"><%= appt.patient ? appt.patient.name : '—' %></div>
+                  <div class="text-muted" style="font-size:.75rem"><%= appt.patient ? appt.patient.email : '' %></div>
+                </td>
+                <td>
+                  <div class="fw-semibold small"><%= appt.doctor ? appt.doctor.name : '—' %></div>
+                  <div class="doctor-mini"><%= appt.doctor ? appt.doctor.category : '' %></div>
+                </td>
+                <td>
+                  <div class="fw-semibold small">
+                    <%= appt.appointmentDate ? new Date(appt.appointmentDate).toLocaleDateString('en-PK', { day:'2-digit', month:'short', year:'numeric' }) : '—' %>
+                  </div>
+                  <div class="text-muted" style="font-size:.75rem">
+                    <%= appt.appointmentDate ? new Date(appt.appointmentDate).toLocaleTimeString('en-PK', { hour:'2-digit', minute:'2-digit' }) : '' %>
+                  </div>
+                </td>
+                <td class="small"><%= appt.phone || '—' %></td>
+                <td>
+                  <span class="status-badge status-<%= appt.status %>">
+                    <% if (appt.status === 'pending')   { %><i class="fas fa-clock me-1"></i><% } %>
+                    <% if (appt.status === 'approved')  { %><i class="fas fa-check me-1"></i><% } %>
+                    <% if (appt.status === 'rejected')  { %><i class="fas fa-times me-1"></i><% } %>
+                    <% if (appt.status === 'completed') { %><i class="fas fa-check-double me-1"></i><% } %>
+                    <% if (appt.status === 'cancelled') { %><i class="fas fa-ban me-1"></i><% } %>
+                    <%= appt.status.charAt(0).toUpperCase() + appt.status.slice(1) %>
+                  </span>
+                </td>
+                <td class="text-end px-4">
+                  <a href="/admin/appointments/<%= appt._id %>" class="btn btn-sm btn-outline-secondary rounded-pill">
+                    <i class="fas fa-eye me-1"></i>View / Update
+                  </a>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── Pagination ── -->
+        <% if (totalPages > 1) { %>
+        <div class="d-flex justify-content-between align-items-center px-4 py-3 border-top">
+          <small class="text-muted">Page <%= currentPage %> of <%= totalPages %></small>
+          <nav>
+            <ul class="pagination pagination-sm mb-0">
+              <% for (let p = 1; p <= totalPages; p++) { %>
+              <li class="page-item <%= p === currentPage ? 'active' : '' %>">
+                <a class="page-link" href="/admin/appointments?status=<%= statusFilter %>&page=<%= p %>"><%= p %></a>
+              </li>
+              <% } %>
+            </ul>
+          </nav>
+        </div>
+        <% } %>
+        <% } %>
+      </div>
+    </div>
+
+  </div><!-- /.admin-content -->
+</div><!-- /.admin-main -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Doctors — Multisensa Admin</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="/css/admin.css" rel="stylesheet">
+</head>
+<body class="admin-body">
+
+<%- include('partials/sidebar', { activePage: 'doctors' }) %>
+
+<div class="admin-main">
+
+    <!-- ── Top Bar ── -->
+    <div class="admin-topbar">
+        <div class="topbar-left">
+            <button class="sidebar-toggle-btn" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="topbar-page-title">
+                <h4><i class="fas fa-user-md me-2" style="color:#0d9488;"></i>Manage Doctors</h4>
+                <small><%= totalDoctors %> specialist<%= totalDoctors !== 1 ? 's' : '' %> in the system</small>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <span class="admin-role-badge"><i class="fas fa-shield-alt me-1"></i>Admin</span>
+            <a href="/admin/doctors/new" class="btn-admin-primary">
+                <i class="fas fa-plus"></i> Add Doctor
+            </a>
+        </div>
+    </div>
+
+    <div class="admin-content">
+
+        <!-- Flash Messages -->
+        <% if (success && success.length > 0) { %>
+        <div class="flash-success mb-4" id="flashMsg">
+            <i class="fas fa-check-circle"></i> <%= success[0] %>
+        </div>
+        <% } %>
+        <% if (error && error.length > 0) { %>
+        <div class="flash-error mb-4" id="flashMsg">
+            <i class="fas fa-exclamation-circle"></i> <%= error[0] %>
+        </div>
+        <% } %>
+
+        <!-- ── Search & Filter Bar ── -->
+        <div class="admin-search-wrap">
+            <form method="GET" action="/admin/doctors" class="row g-2 align-items-end">
+                <!-- Search by name -->
+                <div class="col-md-5">
+                    <label class="form-label">Search by Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="border-radius:8px 0 0 8px;border:1.5px solid #e5e7eb;background:#f9fafb;">
+                            <i class="fas fa-search" style="color:#9ca3af;font-size:13px;"></i>
+                        </span>
+                        <input type="text" name="search" value="<%= search %>"
+                               class="form-control" placeholder="Search doctor name..."
+                               style="border-left:none;border-radius:0 8px 8px 0;">
+                    </div>
+                </div>
+
+                <!-- Filter by category -->
+                <div class="col-md-4">
+                    <label class="form-label">Filter by Specialization</label>
+                    <select name="category" class="form-select">
+                        <option value="">All Specializations</option>
+                        <% categories.forEach(cat => { %>
+                        <option value="<%= cat %>" <%= category === cat ? 'selected' : '' %>><%= cat %></option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <!-- Buttons -->
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn-admin-primary flex-grow-1">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                    <a href="/admin/doctors" class="btn-admin-secondary">
+                        <i class="fas fa-times"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- ── Doctors Table ── -->
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h5>
+                    <i class="fas fa-list me-2" style="color:#0d9488;"></i>
+                    Doctor Records
+                    <% if (search || category) { %>
+                        <span style="font-size:12px;font-weight:400;color:#6b7280;margin-left:8px;">
+                            — filtered results
+                        </span>
+                    <% } %>
+                </h5>
+                <span style="font-size:13px;color:#6b7280;font-weight:600;">
+                    Page <%= currentPage %> of <%= totalPages %>
+                </span>
+            </div>
+
+            <% if (doctors.length > 0) { %>
+            <div class="table-responsive">
+                <table class="table admin-table mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width:50px;">#</th>
+                            <th>Doctor</th>
+                            <th>Specialization</th>
+                            <th>Charges</th>
+                            <th>Experience</th>
+                            <th style="text-align:center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% doctors.forEach((doc, i) => { %>
+                        <tr id="row-<%= doc._id %>">
+                            <!-- Index -->
+                            <td style="color:#9ca3af;font-size:13px;">
+                                <%= ((currentPage - 1) * 10) + i + 1 %>
+                            </td>
+
+                            <!-- Doctor info -->
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <img
+                                        src="<%= doc.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name)}&background=0d9488&color=fff&size=80&bold=true&rounded=true` %>"
+                                        class="doctor-thumb"
+                                        alt="<%= doc.name %>"
+                                        onerror="this.src='https://ui-avatars.com/api/?name=<%= encodeURIComponent(doc.name) %>&background=0d9488&color=fff&size=80&bold=true&rounded=true'">
+                                    <div>
+                                        <div style="font-weight:600;color:#1a3a3c;font-size:14px;white-space:nowrap;">
+                                            <%= doc.name %>
+                                        </div>
+                                        <div style="font-size:11px;color:#9ca3af;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                                            <%= doc.qualification %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Category -->
+                            <td>
+                                <span class="badge badge-category px-2 py-1" style="font-size:11px;border-radius:6px;">
+                                    <%= doc.category %>
+                                </span>
+                            </td>
+
+                            <!-- Charges -->
+                            <td style="font-weight:600;color:#1a3a3c;white-space:nowrap;">
+                                PKR&nbsp;<%= doc.charges.toLocaleString() %>
+                            </td>
+
+                            <!-- Experience -->
+                            <td style="font-size:13px;color:#6b7280;white-space:nowrap;">
+                                <%= doc.experience %> yr<%= doc.experience !== 1 ? 's' : '' %>
+                            </td>
+
+                            <!-- Actions -->
+                            <td>
+                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                    <!-- Edit button -->
+                                    <a href="/admin/doctors/<%= doc._id %>/edit"
+                                       class="btn-action btn-edit"
+                                       title="Edit Doctor">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+
+                                    <!-- Delete button — triggers modal -->
+                                    <button type="button"
+                                            class="btn-action btn-delete"
+                                            title="Delete Doctor"
+                                            onclick="confirmDelete('<%= doc._id %>', '<%= doc.name.replace(/'/g, `\\'`) %>')">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </button>
+
+                                    <!-- Hidden delete form -->
+                                    <form id="deleteForm-<%= doc._id %>"
+                                          action="/admin/doctors/<%= doc._id %>?_method=DELETE"
+                                          method="POST"
+                                          style="display:none;">
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <% } else { %>
+            <div class="empty-state">
+                <i class="fas fa-user-md"></i>
+                <h5>No doctors found</h5>
+                <% if (search || category) { %>
+                    <p>No results match your search criteria. Try adjusting the filters.</p>
+                    <a href="/admin/doctors" class="btn-admin-secondary">Clear Filters</a>
+                <% } else { %>
+                    <p>No doctors have been added yet. Get started by adding your first specialist.</p>
+                    <a href="/admin/doctors/new" class="btn-admin-primary">
+                        <i class="fas fa-plus"></i> Add First Doctor
+                    </a>
+                <% } %>
+            </div>
+            <% } %>
+
+            <!-- ── Pagination ── -->
+            <% if (totalPages > 1) { %>
+            <div style="padding:16px 24px;border-top:1px solid #f1f5f5;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-size:13px;color:#6b7280;">
+                    Showing <%= ((currentPage-1)*10)+1 %>–<%= Math.min(currentPage*10, totalDoctors) %>
+                    of <%= totalDoctors %> doctors
+                </span>
+                <nav>
+                    <ul class="pagination mb-0">
+                        <!-- Previous -->
+                        <li class="page-item <%= currentPage <= 1 ? 'disabled' : '' %>">
+                            <a class="page-link"
+                               href="/admin/doctors?page=<%= currentPage - 1 %>&search=<%= encodeURIComponent(search) %>&category=<%= encodeURIComponent(category) %>">
+                                <i class="fas fa-chevron-left" style="font-size:11px;"></i>
+                            </a>
+                        </li>
+
+                        <!-- Page numbers -->
+                        <% for (let p = 1; p <= totalPages; p++) { %>
+                        <li class="page-item <%= p === currentPage ? 'active' : '' %>">
+                            <a class="page-link"
+                               href="/admin/doctors?page=<%= p %>&search=<%= encodeURIComponent(search) %>&category=<%= encodeURIComponent(category) %>">
+                                <%= p %>
+                            </a>
+                        </li>
+                        <% } %>
+
+                        <!-- Next -->
+                        <li class="page-item <%= currentPage >= totalPages ? 'disabled' : '' %>">
+                            <a class="page-link"
+                               href="/admin/doctors?page=<%= currentPage + 1 %>&search=<%= encodeURIComponent(search) %>&category=<%= encodeURIComponent(category) %>">
+                                <i class="fas fa-chevron-right" style="font-size:11px;"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <% } %>
+
+        </div><!-- /admin-card -->
+
+    </div><!-- /admin-content -->
+</div><!-- /admin-main -->
+
+<!-- ═══════════════════════════════════════════
+     DELETE CONFIRMATION MODAL
+═══════════════════════════════════════════ -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header modal-header-danger">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm Deletion
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="padding:28px;">
+                <div class="text-center mb-4">
+                    <div style="width:64px;height:64px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                        <i class="fas fa-user-minus" style="font-size:28px;color:#dc2626;"></i>
+                    </div>
+                    <h5 style="color:#1f2937;font-weight:700;margin-bottom:8px;">Remove Doctor?</h5>
+                    <p style="color:#6b7280;font-size:14px;margin:0;">
+                        Are you sure you want to remove
+                        <strong id="deleteDoctorName" style="color:#1f2937;"></strong>
+                        from the system?
+                    </p>
+                    <p style="color:#ef4444;font-size:13px;margin-top:8px;">
+                        <i class="fas fa-exclamation-circle me-1"></i>
+                        This action cannot be undone.
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer" style="border:none;padding:0 28px 24px;gap:10px;">
+                <button type="button"
+                        class="btn-admin-secondary flex-grow-1"
+                        data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="button"
+                        class="btn-admin-primary flex-grow-1"
+                        id="confirmDeleteBtn"
+                        style="background:#dc2626;"
+                        onclick="submitDeleteForm()">
+                    <i class="fas fa-trash-alt"></i> Yes, Remove
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ── Mobile sidebar ────────────────────────────────────
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const sidebar   = document.getElementById('adminSidebar');
+    const overlay   = document.getElementById('sidebarOverlay');
+
+    toggleBtn?.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+    });
+
+    overlay?.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+    });
+
+    // ── Delete confirmation ───────────────────────────────
+    let currentDeleteId = null;
+
+    function confirmDelete(doctorId, doctorName) {
+        currentDeleteId = doctorId;
+        document.getElementById('deleteDoctorName').textContent = doctorName;
+        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        modal.show();
+    }
+
+    function submitDeleteForm() {
+        if (currentDeleteId) {
+            document.getElementById(`deleteForm-${currentDeleteId}`).submit();
+        }
+    }
+
+    // ── Auto-dismiss flash messages ───────────────────────
+    setTimeout(() => {
+        const msg = document.getElementById('flashMsg');
+        if (msg) {
+            msg.style.transition = 'opacity 0.5s';
+            msg.style.opacity = '0';
+            setTimeout(() => msg.remove(), 500);
+        }
+    }, 5000);
+</script>
+
+</body>
+</html>
