@@ -1,0 +1,381 @@
+<!-- views/onsale-doctors.ejs
+     Body content only — express-ejs-layouts wraps it with views/layouts/main.ejs
+     Exam requirements: Express Route, Mongoose Query, EJS Rendering,
+     express-ejs-layouts, jQuery client-side pagination (no AJAX), DOM manipulation -->
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     HERO BANNER
+     ══════════════════════════════════════════════════════════════════════════ -->
+<section class="sale-hero py-5">
+    <div class="container text-center">
+        <div class="sale-badge-large mx-auto mb-3">
+            <i class="fa-solid fa-tag me-2"></i>LIMITED TIME OFFER
+        </div>
+        <h1 class="display-5 fw-800 text-white mb-2">
+            Doctors <span class="text-warning">On Sale</span>
+        </h1>
+        <p class="lead text-white opacity-75 mb-0">
+            Book a consultation with our specialists at discounted rates
+        </p>
+        <!-- Live counter updated by jQuery -->
+        <p class="text-white-50 mt-2 small" id="saleCount">
+            <!-- filled by JS -->
+        </p>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     FILTER BAR (category quick-filter — pure jQuery, no server round-trips)
+     ══════════════════════════════════════════════════════════════════════════ -->
+<section class="bg-white border-bottom py-3 mb-0">
+    <div class="container">
+        <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between">
+            <div class="d-flex flex-wrap gap-2" id="categoryFilters">
+                <button class="btn btn-sm btn-teal active-filter" data-cat="all">All</button>
+                <%
+                    // Build unique category list from the doctors array
+                    const cats = [...new Set(doctors.map(d => d.category))].sort();
+                    cats.forEach(cat => {
+                %>
+                <button class="btn btn-sm btn-outline-secondary category-btn" data-cat="<%= cat %>"><%= cat %></button>
+                <% }); %>
+            </div>
+            <div class="text-muted small" id="filterInfo">
+                Showing all <strong><%= doctors.length %></strong> offers
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     DOCTOR CARDS GRID
+     All cards are rendered into the DOM by EJS in one shot.
+     jQuery reads them and paginates — NO server calls during navigation.
+     ══════════════════════════════════════════════════════════════════════════ -->
+<main class="py-5">
+    <div class="container">
+
+        <!-- Empty-state (shown by JS when filter returns 0 results) -->
+        <div id="emptyState" class="text-center py-5 d-none">
+            <i class="fa-solid fa-magnifying-glass fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No matching offers found</h5>
+            <button class="btn btn-outline-secondary mt-2" id="clearFilter">Show all offers</button>
+        </div>
+
+        <!-- ───────────────────────────────────────────────────────────────
+             EJS forEach — renders ALL doctors into the DOM.
+             Each card gets:
+               • class="doctor-card"     → jQuery selects these for pagination
+               • data-category           → for the filter buttons
+             The jQuery below will HIDE all and SHOW only the current page's slice.
+        ──────────────────────────────────────────────────────────────────── -->
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4" id="cardsGrid">
+            <% doctors.forEach(function(doctor) { %>
+            <div class="col doctor-card" data-category="<%= doctor.category %>">
+                <div class="card h-100 sale-card shadow-sm border-0 position-relative">
+
+                    <!-- ── DISCOUNT BADGE (top-left corner) ── -->
+                    <div class="sale-badge position-absolute top-0 start-0 m-2">
+                        <i class="fa-solid fa-tag me-1"></i><%= doctor.discountPercentage %>% OFF
+                    </div>
+
+                    <!-- ── DOCTOR IMAGE ── -->
+                    <div class="card-img-wrapper text-center pt-4 pb-2">
+                        <img
+                            src="<%= doctor.image && doctor.image !== '' ? doctor.image : '/img/default-doctor.png' %>"
+                            onerror="this.src='https://ui-avatars.com/api/?name=<%= encodeURIComponent(doctor.name) %>&background=0d9488&color=fff&size=128'"
+                            alt="<%= doctor.name %>"
+                            class="doctor-img rounded-circle"
+                        />
+                    </div>
+
+                    <!-- ── CARD BODY ── -->
+                    <div class="card-body text-center px-3 pb-0">
+                        <h6 class="card-title fw-700 mb-1 text-dark"><%= doctor.name %></h6>
+                        <p class="text-teal small fw-600 mb-2">
+                            <i class="fa-solid fa-stethoscope me-1"></i><%= doctor.category %>
+                        </p>
+
+                        <!-- Rating stars -->
+                        <div class="mb-2">
+                            <% for(let s = 1; s <= 5; s++) { %>
+                                <i class="fa-solid fa-star <%= s <= Math.round(doctor.rating) ? 'text-warning' : 'text-secondary opacity-25' %>" style="font-size:.7rem"></i>
+                            <% } %>
+                            <span class="text-muted small ms-1">(<%= doctor.rating %>)</span>
+                        </div>
+
+                        <!-- ── FEE PRICING — core exam output ── -->
+                        <div class="fee-block mb-3">
+                            <!-- Original fee: strikethrough (like an e-commerce "was" price) -->
+                            <div class="original-fee text-muted text-decoration-line-through mb-0" style="font-size:.85rem">
+                                PKR <%= doctor.originalFee.toLocaleString() %>
+                            </div>
+                            <!-- Discounted fee: prominently displayed in teal -->
+                            <div class="discounted-fee fw-800 text-teal" style="font-size:1.3rem">
+                                PKR <%= doctor.discountedFee.toLocaleString() %>
+                            </div>
+                            <!-- Savings callout -->
+                            <div class="text-success small">
+                                <i class="fa-solid fa-circle-check me-1"></i>
+                                Save PKR <%= (doctor.originalFee - doctor.discountedFee).toLocaleString() %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── CARD FOOTER ── -->
+                    <div class="card-footer bg-transparent border-0 px-3 pb-3">
+                        <div class="d-flex gap-2">
+                            <a href="/doctors/<%= doctor._id %>" class="btn btn-sm btn-outline-teal flex-fill">
+                                <i class="fa-solid fa-circle-info me-1"></i>View Profile
+                            </a>
+                            <% if (typeof currentUser !== 'undefined' && currentUser &&
+                                   (currentUser.role === 'patient' || currentUser.role === 'customer')) { %>
+                            <a href="/appointments/book?doctorId=<%= doctor._id %>" class="btn btn-sm btn-teal flex-fill">
+                                <i class="fa-solid fa-calendar-plus me-1"></i>Book
+                            </a>
+                            <% } else if (typeof currentUser === 'undefined' || !currentUser) { %>
+                            <a href="/login" class="btn btn-sm btn-teal flex-fill">
+                                <i class="fa-solid fa-right-to-bracket me-1"></i>Login
+                            </a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% }); %>
+        </div><!-- /#cardsGrid -->
+
+        <!-- ══════════════════════════════════════════════════════════════
+             JQUERY PAGINATION CONTROLS
+             Previous / Page X of Y / Next
+             These buttons manipulate the DOM — no server requests made.
+        ══════════════════════════════════════════════════════════════════ -->
+        <div class="pagination-controls mt-5 d-flex align-items-center justify-content-center gap-3 flex-wrap" id="paginationControls">
+            <!-- Previous button — disabled on page 1 -->
+            <button class="btn btn-outline-teal px-4" id="prevBtn" disabled>
+                <i class="fa-solid fa-chevron-left me-1"></i>Previous
+            </button>
+
+            <!-- Page indicator — text updated by jQuery -->
+            <span class="page-indicator fw-600 text-dark" id="pageIndicator">
+                Page 1 of 1
+            </span>
+
+            <!-- Next button — disabled on last page -->
+            <button class="btn btn-teal px-4" id="nextBtn">
+                Next<i class="fa-solid fa-chevron-right ms-1"></i>
+            </button>
+        </div>
+
+    </div><!-- /.container -->
+</main>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     PAGE-SPECIFIC STYLES
+     ══════════════════════════════════════════════════════════════════════════ -->
+<style>
+    /* Hero */
+    .sale-hero {
+        background: linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #0891b2 100%);
+    }
+    .fw-800 { font-weight: 800; }
+    .fw-700 { font-weight: 700; }
+    .fw-600 { font-weight: 600; }
+
+    /* Large badge in hero */
+    .sale-badge-large {
+        display: inline-flex; align-items: center;
+        background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.4);
+        color: #fff; border-radius: 30px; padding: 6px 20px;
+        font-size: .8rem; font-weight: 700; letter-spacing: .08em;
+        backdrop-filter: blur(4px); width: fit-content;
+    }
+
+    /* Card-level discount badge */
+    .sale-badge {
+        background: #dc2626; color: #fff;
+        font-size: .7rem; font-weight: 700;
+        padding: 4px 10px; border-radius: 20px;
+        letter-spacing: .04em; z-index: 1;
+    }
+
+    /* Doctor card hover lift */
+    .sale-card { transition: transform .2s, box-shadow .2s; border-radius: 14px; overflow: hidden; }
+    .sale-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(13,148,136,.18) !important; }
+
+    /* Circular doctor image */
+    .doctor-img {
+        width: 96px; height: 96px;
+        object-fit: cover;
+        border: 3px solid #e2e8f0;
+        transition: border-color .2s;
+    }
+    .sale-card:hover .doctor-img { border-color: var(--teal); }
+
+    /* Teal outline button variant */
+    .btn-outline-teal {
+        color: var(--teal); border-color: var(--teal);
+    }
+    .btn-outline-teal:hover {
+        background-color: var(--teal); color: #fff;
+    }
+
+    /* Pagination */
+    #paginationControls { display: none; }   /* JS shows it when needed */
+    .page-indicator {
+        background: #f1f5f9; border-radius: 8px;
+        padding: 6px 18px; font-size: .9rem;
+    }
+
+    /* Category filter active state */
+    .active-filter { background-color: var(--teal) !important; color: #fff !important; border-color: var(--teal) !important; }
+
+    /* Fee block */
+    .fee-block { background: #f0fdfa; border-radius: 10px; padding: 10px 12px; }
+</style>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     JQUERY — CLIENT-SIDE PAGINATION
+     ──────────────────────────────────────────────────────────────────────────
+     All doctor data is already in the DOM (rendered by EJS above).
+     jQuery works ONLY with the DOM — zero AJAX / fetch calls.
+
+     Algorithm:
+       1. Select all .doctor-card elements into $allCards
+       2. CARDS_PER_PAGE = 10 (shows 10 per page; 12 doctors = 2 pages)
+       3. showPage(n): hide all cards, then .slice(start, end).show()
+       4. Previous / Next buttons update currentPage and call showPage()
+       5. Buttons are disabled at boundaries
+       6. Page indicator updates: "Page X of Y"
+     ══════════════════════════════════════════════════════════════════════════ -->
+<script>
+$(document).ready(function () {
+
+    /* ── CONSTANTS ──────────────────────────────────────── */
+    var CARDS_PER_PAGE = 10;
+
+    /* ── STATE ──────────────────────────────────────────── */
+    var currentPage   = 1;
+    var $activeCards  = $('.doctor-card');   // updated by filter
+
+    /* ── INITIAL COUNT ──────────────────────────────────── */
+    $('#saleCount').text(
+        $activeCards.length + ' discounted consultation' +
+        ($activeCards.length !== 1 ? 's' : '') + ' available today'
+    );
+
+    /* ────────────────────────────────────────────────────────────────
+       showPage(page)
+       ─ Hides ALL .doctor-card elements inside $activeCards
+       ─ Then shows only the slice for the requested page
+       ─ Updates the pagination UI
+    ─────────────────────────────────────────────────────────────── */
+    function showPage(page) {
+        var totalCards = $activeCards.length;
+        var totalPages = Math.max(1, Math.ceil(totalCards / CARDS_PER_PAGE));
+
+        /* Clamp page within valid range */
+        if (page < 1)           page = 1;
+        if (page > totalPages)  page = totalPages;
+        currentPage = page;
+
+        /* Slice boundaries */
+        var startIndex = (currentPage - 1) * CARDS_PER_PAGE;
+        var endIndex   = startIndex + CARDS_PER_PAGE;
+
+        /* DOM manipulation — hide all, then show current slice */
+        $activeCards.hide();                                  // hide all
+        $activeCards.slice(startIndex, endIndex).show();      // show current page
+
+        /* ── Update page indicator text ── */
+        $('#pageIndicator').text('Page ' + currentPage + ' of ' + totalPages);
+
+        /* ── Enable / Disable Previous button ── */
+        if (currentPage <= 1) {
+            $('#prevBtn').prop('disabled', true);
+        } else {
+            $('#prevBtn').prop('disabled', false);
+        }
+
+        /* ── Enable / Disable Next button ── */
+        if (currentPage >= totalPages) {
+            $('#nextBtn').prop('disabled', true);
+        } else {
+            $('#nextBtn').prop('disabled', false);
+        }
+
+        /* ── Show / hide pagination controls ── */
+        if (totalPages > 1) {
+            $('#paginationControls').show();
+        } else {
+            $('#paginationControls').hide();
+        }
+
+        /* ── Show / hide empty state ── */
+        if (totalCards === 0) {
+            $('#emptyState').removeClass('d-none');
+            $('#paginationControls').hide();
+        } else {
+            $('#emptyState').addClass('d-none');
+        }
+
+        /* ── Smooth scroll to top of grid when page changes ── */
+        if (page !== 1) {
+            $('html, body').animate({ scrollTop: $('#cardsGrid').offset().top - 80 }, 300);
+        }
+    }
+
+    /* ── Previous button click ──────────────────────────── */
+    $('#prevBtn').on('click', function () {
+        showPage(currentPage - 1);
+    });
+
+    /* ── Next button click ──────────────────────────────── */
+    $('#nextBtn').on('click', function () {
+        showPage(currentPage + 1);
+    });
+
+    /* ────────────────────────────────────────────────────────────────
+       CATEGORY FILTER (pure client-side DOM manipulation)
+       ─ Clicking a category button filters $activeCards
+       ─ Resets to page 1 after filtering
+    ─────────────────────────────────────────────────────────────── */
+    $('.category-btn, [data-cat="all"]').on('click', function () {
+        var cat = $(this).data('cat');
+
+        /* Toggle active styling */
+        $(this).siblings().removeClass('active-filter btn-teal')
+                           .addClass('btn-outline-secondary');
+        $(this).removeClass('btn-outline-secondary')
+               .addClass('active-filter btn-teal');
+
+        if (cat === 'all') {
+            $activeCards = $('.doctor-card');
+        } else {
+            $activeCards = $('.doctor-card').filter(function () {
+                return $(this).data('category') === cat;
+            });
+        }
+
+        /* Update filter info text */
+        $('#filterInfo').html(
+            'Showing <strong>' + $activeCards.length + '</strong> offer' +
+            ($activeCards.length !== 1 ? 's' : '') +
+            (cat !== 'all' ? ' in <em>' + cat + '</em>' : '')
+        );
+
+        /* Hide all cards first, then show filtered page 1 */
+        $('.doctor-card').hide();
+        showPage(1);
+    });
+
+    /* ── Clear filter button in empty state ─────────────── */
+    $('#clearFilter').on('click', function () {
+        $('[data-cat="all"]').trigger('click');
+    });
+
+    /* ── INIT: show first page on DOM ready ─────────────── */
+    showPage(1);
+
+});   // end $(document).ready
+</script>

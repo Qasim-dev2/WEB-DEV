@@ -432,6 +432,25 @@
             <!-- ── Consultation Charges ── -->
             <div class="detail-section">
                 <h4 class="section-title">Consultation Fee</h4>
+                <% if (doctor.isOnSale) { %>
+                <!-- ON SALE: show discounted price prominently -->
+                <div class="charges-highlight" style="background:linear-gradient(135deg,#f0fdfa,#e6fffa);border:2px solid #99f6e4;">
+                    <div>
+                        <span class="badge mb-2" style="background:#dc2626;font-size:.75rem;letter-spacing:.5px;border-radius:6px;">
+                            <i class="fas fa-tag me-1"></i><%= doctor.discountPercentage %>% OFF
+                        </span>
+                        <div class="amount" style="color:#0f766e;">PKR <%= doctor.discountedFee.toLocaleString() %></div>
+                        <div class="per-session">per consultation session</div>
+                        <div class="mt-1" style="font-size:.82rem;color:#9ca3af;">
+                            Original: <s>PKR <%= doctor.originalFee.toLocaleString() %></s>
+                            &nbsp;·&nbsp; You save PKR <%= (doctor.originalFee - doctor.discountedFee).toLocaleString() %>
+                        </div>
+                    </div>
+                    <div style="text-align:right;">
+                        <i class="fas fa-tag" style="font-size:2.5rem;color:#dc2626;opacity:0.5;"></i>
+                    </div>
+                </div>
+                <% } else { %>
                 <div class="charges-highlight">
                     <div>
                         <div class="amount">PKR <%= doctor.charges.toLocaleString() %></div>
@@ -441,6 +460,7 @@
                         <i class="fas fa-coins" style="font-size:2.5rem; color:#f59e0b; opacity:0.6;"></i>
                     </div>
                 </div>
+                <% } %>
                 <p class="mt-3 mb-0" style="font-size:0.82rem; color:#9ca3af;">
                     <i class="fas fa-info-circle me-1"></i>
                     Consultation fees are subject to change. Please confirm at the time of booking.

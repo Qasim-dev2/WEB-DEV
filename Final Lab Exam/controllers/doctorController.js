@@ -10,7 +10,7 @@ const CATEGORIES = [
 exports.getAllDoctors = async (req, res) => {
     try {
         const { search = '', category = '', min = '', max = '', sort = '', page = '1' } = req.query;
-        const filter = {};
+        const filter = { isOnSale: { $ne: true } };   // on-sale doctors appear only on /onsale-doctors
         if (search.trim()) filter.name     = { $regex: search.trim(), $options: 'i' };
         if (category)      filter.category = category;
         if (min || max) {
@@ -54,6 +54,32 @@ exports.getDoctorDetail = async (req, res) => {
         res.render('doctor-detail', { doctor, relatedDoctors: related });
     } catch (err) {
         req.flash('error', 'Could not load doctor profile.');
+        res.redirect('/doctors');
+    }
+};
+
+// ─────────────────────────────────────────────────────────────────
+// GET /onsale-doctors
+// Mongoose query: fetch ALL doctors where isOnSale === true in one go.
+// We pass the full array to EJS — NO server-side pagination.
+// jQuery handles pagination entirely on the client (no extra requests).
+// ─────────────────────────────────────────────────────────────────
+exports.getOnSaleDoctors = async (req, res) => {
+    try {
+        // Mongoose query — single DB call, returns all on-sale doctors
+        const doctors = await Doctor.find({ isOnSale: true }).sort({ discountPercentage: -1 });
+
+        // Pass layout in render OPTIONS (not res.locals) so express-ejs-layouts
+        // detects it at line 66 check: options.layout = 'layouts/main' overrides
+        // the global app.set('layout', false) default.
+        res.render('onsale-doctors', {
+            layout  : 'layouts/main',
+            doctors,
+            title   : 'Doctors On Sale — Multisensa',
+        });
+    } catch (err) {
+        console.error(err);
+        req.flash('error', 'Could not load on-sale doctors.');
         res.redirect('/doctors');
     }
 };

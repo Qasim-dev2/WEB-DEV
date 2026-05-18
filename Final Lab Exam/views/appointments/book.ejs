@@ -128,14 +128,23 @@
                 <div class="selected-doctor-card mb-3">
                   <div class="d-flex align-items-center gap-3">
                     <% const img = selectedDoctor.image && selectedDoctor.image.trim()
-                          ? (selectedDoctor.image.startsWith('http') ? selectedDoctor.image : '/uploads/doctors/' + selectedDoctor.image)
+                          ? selectedDoctor.image
                           : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(selectedDoctor.name) + '&background=0d9488&color=fff'; %>
                     <img src="<%= img %>" alt="<%= selectedDoctor.name %>" class="doctor-thumb"
                          onerror="this.src='https://ui-avatars.com/api/?name=<%= encodeURIComponent(selectedDoctor.name) %>&background=0d9488&color=fff'">
                     <div>
                       <div class="fw-semibold text-teal"><%= selectedDoctor.name %></div>
                       <div class="text-muted small"><%= selectedDoctor.category %></div>
+                      <% if (selectedDoctor.isOnSale) { %>
+                      <div class="small">
+                        <span class="badge bg-danger me-1" style="font-size:.65rem;"><%= selectedDoctor.discountPercentage %>% OFF</span>
+                        <strong style="color:#0d9488;">Rs. <%= selectedDoctor.discountedFee %></strong>
+                        <s class="text-muted ms-1" style="font-size:.8rem;">Rs. <%= selectedDoctor.charges %></s>
+                        <span class="text-muted"> / session</span>
+                      </div>
+                      <% } else { %>
                       <div class="text-muted small">Rs. <%= selectedDoctor.charges %> / session</div>
+                      <% } %>
                     </div>
                     <a href="/appointments/book" class="btn btn-sm btn-outline-secondary ms-auto">
                       <i class="fa-solid fa-repeat me-1"></i>Change
@@ -150,7 +159,7 @@
                   <option value="">-- Select a specialist --</option>
                   <% doctors.forEach(doc => { %>
                   <option value="<%= doc._id %>" <%= (formData && formData.doctor == doc._id.toString()) ? 'selected' : '' %>>
-                    <%= doc.name %> — <%= doc.category %> (Rs. <%= doc.charges %>)
+                    <%= doc.name %> — <%= doc.category %> (<%= doc.isOnSale ? doc.discountPercentage + '% OFF — Rs. ' + doc.discountedFee : 'Rs. ' + doc.charges %>)
                   </option>
                   <% }) %>
                 </select>

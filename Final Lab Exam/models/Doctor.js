@@ -84,6 +84,35 @@ const doctorSchema = new mongoose.Schema(
             default : null,
             sparse  : true,
         },
+
+        // ── SALE / DISCOUNT FIELDS ────────────────────────────
+        // Is this doctor's consultation fee currently on sale?
+        isOnSale: {
+            type    : Boolean,
+            default : false,
+        },
+
+        // Discount percentage (e.g., 20 means 20% OFF)
+        discountPercentage: {
+            type    : Number,
+            default : 0,
+            min     : 0,
+            max     : 100,
+        },
+
+        // Original fee before the discount (stored explicitly for display)
+        originalFee: {
+            type    : Number,
+            default : 0,
+            min     : 0,
+        },
+
+        // Pre-computed discounted fee = originalFee - (originalFee * discountPercentage / 100)
+        discountedFee: {
+            type    : Number,
+            default : 0,
+            min     : 0,
+        },
     },
     {
         // Automatically adds createdAt and updatedAt timestamps

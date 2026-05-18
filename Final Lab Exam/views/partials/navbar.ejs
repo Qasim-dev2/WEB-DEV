@@ -10,6 +10,13 @@
     <div class="collapse navbar-collapse" id="mainNav">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item"><a class="nav-link" href="/doctors"><i class="fa-solid fa-user-doctor me-1"></i>Specialists</a></li>
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center gap-1" href="/onsale-doctors">
+            <i class="fa-solid fa-tag"></i>
+            <span>On Sale</span>
+            <span class="badge bg-danger" style="font-size:.6rem;padding:2px 6px;border-radius:8px;">SALE</span>
+          </a>
+        </li>
         <% if (currentUser && (currentUser.role === 'patient' || currentUser.role === 'customer')) { %>
         <li class="nav-item"><a class="nav-link" href="/patient/dashboard"><i class="fa-solid fa-gauge me-1"></i>My Dashboard</a></li>
         <li class="nav-item"><a class="nav-link" href="/appointments/book"><i class="fa-solid fa-calendar-plus me-1"></i>Book Appointment</a></li>

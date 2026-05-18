@@ -3,6 +3,7 @@
 require("dotenv").config({ path: require("path").join(__dirname, ".env") });
 
 const express        = require("express");
+const expressLayouts = require("express-ejs-layouts");   // NEW — used by onsale-doctors page
 const path           = require("path");
 const session        = require("express-session");
 const MongoStore     = require("connect-mongo");
@@ -15,6 +16,7 @@ const doctorRoutes      = require("./routes/doctors");
 const doctorDashRoutes  = require("./routes/doctor");
 const patientRoutes     = require("./routes/patient");
 const appointmentRoutes = require("./routes/appointments");
+const onsaleRoutes      = require("./routes/onsale");     // NEW — on-sale doctors
 const isLoggedIn     = require("./middleware/isLoggedIn");
 
 connectDB();
@@ -22,6 +24,12 @@ connectDB();
 const app = express();
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
+// express-ejs-layouts — ONLY used when a route explicitly passes { layout: '...' }
+// Setting layout:false globally means existing views are NOT affected at all.
+app.use(expressLayouts);
+app.set("layout", false);   // default = no layout; onsale-doctors overrides this per-render
+
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -72,6 +80,7 @@ app.use("/doctor",       doctorDashRoutes);
 app.use("/admin",        adminRoutes);
 app.use("/patient",      patientRoutes);
 app.use("/appointments", appointmentRoutes);
+app.use("/onsale-doctors", onsaleRoutes);   // NEW — Doctors On Sale page
 
 app.get("/profile",       isLoggedIn, (req, res) => res.render("profile"));
 

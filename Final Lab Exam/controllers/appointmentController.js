@@ -20,13 +20,13 @@ exports.getBookingForm = async (req, res) => {
         // Load ALL available doctors for the select dropdown
         const doctors = await Doctor.find({ availability: { $ne: 'Fully Booked' } })
             .sort({ rating: -1 })
-            .select('name category charges rating availability');
+            .select('name category charges rating availability isOnSale discountedFee discountPercentage');
 
         // Pre-select doctor if ?doctor= query param is provided
         let selectedDoctor = null;
         if (req.query.doctor) {
             selectedDoctor = await Doctor.findById(req.query.doctor)
-                .select('name category charges rating qualification availability image');
+                .select('name category charges rating qualification availability image isOnSale discountedFee discountPercentage originalFee');
             // If ID is invalid or doctor not found, just show the form without pre-selection
         }
 
@@ -79,10 +79,10 @@ exports.postBookAppointment = async (req, res) => {
         // Re-load doctors list for the form
         const doctors = await Doctor.find({ availability: { $ne: 'Fully Booked' } })
             .sort({ rating: -1 })
-            .select('name category charges rating availability');
+            .select('name category charges rating availability isOnSale discountedFee discountPercentage');
 
         let selectedDoctor = null;
-        if (doctor) selectedDoctor = await Doctor.findById(doctor).select('name category charges rating availability image').catch(() => null);
+        if (doctor) selectedDoctor = await Doctor.findById(doctor).select('name category charges rating availability image isOnSale discountedFee discountPercentage originalFee').catch(() => null);
 
         return res.render('appointments/book', {
             doctors,
@@ -118,7 +118,7 @@ exports.postBookAppointment = async (req, res) => {
 
         const doctors = await Doctor.find({ availability: { $ne: 'Fully Booked' } })
             .sort({ rating: -1 })
-            .select('name category charges rating availability');
+            .select('name category charges rating availability isOnSale discountedFee discountPercentage');
 
         return res.render('appointments/book', {
             doctors,
